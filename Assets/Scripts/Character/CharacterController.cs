@@ -37,6 +37,10 @@ public class CharacterController : MonoBehaviour
     void Update()
     {
         UpdateSpeed();
-        //transform.LookAt(mMovementMotor.Position);
+
+        if (mMovementMotor.Position.magnitude > 0.1f)
+        {
+            transform.forward = mMovementMotor.Position;
+        }
     }
 }

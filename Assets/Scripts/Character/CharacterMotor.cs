@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class CharacterMotor : MonoBehaviour
 {
+
+    public float Speed = 0.05f;
     private Vector3 Direction;
 
     public Vector3 Position
@@ -20,21 +22,22 @@ public class CharacterMotor : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
+      void Update()
+     {
+       Position = Vector3.Lerp(Position, Direction, Speed * Time.deltaTime);
+     }
 
     public void setDirection(Vector3 direction)
     {
         Direction = direction;
-        Position = direction;
     }
 
     void OnDrawGizmosSelected()
     {
         // Draw a yellow sphere at the transform's position
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(Direction, .05f);
+        Gizmos.DrawSphere(transform.position + Direction, .05f);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(transform.position + Position, .05f);
     }
 }
