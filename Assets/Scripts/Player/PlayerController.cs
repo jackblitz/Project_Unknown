@@ -54,6 +54,7 @@ public class PlayerController : MonoBehaviour
         get;
         set;
     }
+    public bool IsAiming { get; private set; }
 
     private void Awake()
     {
@@ -63,6 +64,8 @@ public class PlayerController : MonoBehaviour
         mInput.PlayerControls.LookAt.performed += ctx => LookAtDirection = ctx.ReadValue<Vector2>();
 
         mInput.PlayerControls.Run.performed += ctx => IsRunning = ctx.ReadValueAsButton();
+
+        mInput.PlayerControls.ContextLock.performed += ctx => IsAiming = ctx.ReadValueAsButton();
     }
     void Start()
     {
@@ -71,6 +74,60 @@ public class PlayerController : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        OnUpdateMoveDirection();
+        OnUpdateLookDirection();
+        OnUpdateSpeed();
+
+        OnUpdateAimState();
+    }
+
+    private void OnUpdateAimState()
+    {
+        if (MoveToDirection.magnitude < .1)
+        {
+            mCharacterController.setAimState(CharacterController.AimState.Idle);
+        }
+        else
+        {
+            mCharacterController.setAimState(CharacterController.AimState.Hip);
+        }
+
+        if (IsAiming)
+        {
+            mCharacterController.setAimState(CharacterController.AimState.Aim);
+        }
+    }
+
+    private void OnUpdateSpeed()
+    {
+        MovementMotor.isRunning = IsRunning;
+    }
+
+    private void OnUpdateLookDirection()
+    {
+        ////Looking
+        Vector3 rawLookDirection = new Vector3(LookAtDirection.x, 0, LookAtDirection.y);
+
+        //Only recalcuate forward direction if player moves direction
+        if (Vector3.Distance(rawLookDirection, mLastLookDirection) > 0.2f)
+        {
+            mCameraLookForward = Camera.main.transform.forward;
+            mCameraLookRight = Camera.main.transform.right;
+        }
+
+        var moveLookDirection = (mCameraLookRight * rawLookDirection.x + mCameraLookForward * rawLookDirection.z).normalized;
+        moveLookDirection.y = 0;
+
+        if (moveLookDirection.magnitude > 0.1f)
+            AimMotor.setDirection(moveLookDirection);
+        else
+            AimMotor.setDirection(transform.forward);
+
+        mLastLookDirection = rawLookDirection;
+    }
+
+    private void OnUpdateMoveDirection()
     {
         Vector3 rawDirection = new Vector3(MoveToDirection.x, 0, MoveToDirection.y);
 
@@ -84,35 +141,12 @@ public class PlayerController : MonoBehaviour
         var moveSmoothDirection = (mCameraRight * rawDirection.x + mCameraForward * rawDirection.z).normalized;
         moveSmoothDirection.y = 0;
 
-        MovementMotor.setDirection(moveSmoothDirection);
+        if (rawDirection.magnitude > 0.1f)
+            MovementMotor.setDirection(moveSmoothDirection);
+        else
+            MovementMotor.setDirection(Vector3.zero);
 
         mLastRawDirection = rawDirection;
-
-        
-        ////Looking
-        Vector3 rawLookDirection = new Vector3(LookAtDirection.x, 0, LookAtDirection.y);
-
-        //Only recalcuate forward direction if player moves direction
-        if (Vector3.Distance(rawLookDirection, mLastLookDirection) > 0.2f)
-        {
-            mCameraLookForward = Camera.main.transform.forward;
-            mCameraLookRight = Camera.main.transform.right;
-        }
-
-
-        var moveLookDirection = (mCameraLookRight * rawLookDirection.x + mCameraLookForward * rawLookDirection.z).normalized;
-        moveLookDirection.y = 0;
-        /* Camera rotation stuff, mouse controls this shit */
-        // lookSmoothDirection.x -= rawLookDirection.z * mouseSpeed * 0.02f;
-        // lookSmoothDirection.y += rawLookDirection.x * mouseSpeed * 0.02f;
-
-        // Clamp the X rotation
-        // lookSmoothDirection.x = Mathf.Clamp(lookSmoothDirection.x, -90f, 45f);
-
-        if(moveLookDirection.magnitude > 0.1f)
-            AimMotor.setDirection(moveLookDirection);
-
-        mLastLookDirection = rawLookDirection;
     }
 
     private void OnEnable()

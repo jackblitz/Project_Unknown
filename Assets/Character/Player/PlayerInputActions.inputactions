@@ -158,17 +158,6 @@
                 },
                 {
                     "name": "",
-                    "id": "a641c366-2ba7-4526-99e0-5e961421e5f4",
-                    "path": "<Mouse>/delta",
-                    "interactions": "",
-                    "processors": "ScaleVector2(x=0.25,y=0.25)",
-                    "groups": "Keyboard",
-                    "action": "LookAt",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "f40c063c-fd56-4d97-b8da-dafc2f87eb6b",
                     "path": "<Keyboard>/leftCtrl",
                     "interactions": "Press(behavior=2)",

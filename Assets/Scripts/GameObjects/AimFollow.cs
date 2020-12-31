@@ -12,7 +12,7 @@ public class AimFollow : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         transform.position = mAimMotor.transform.position + mAimMotor.Position;
     }

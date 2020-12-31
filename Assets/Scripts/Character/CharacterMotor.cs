@@ -8,6 +8,12 @@ public class CharacterMotor : MonoBehaviour
     public float Speed = 0.05f;
     private Vector3 Direction;
 
+    public bool isRunning {
+        get;
+        set;
+    }
+
+
     public Vector3 Position
     {
         get;
