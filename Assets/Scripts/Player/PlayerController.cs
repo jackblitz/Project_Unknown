@@ -84,7 +84,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnUpdateAimState()
     {
-        if (MoveToDirection.magnitude < .1)
+        if (MoveToDirection.magnitude < .1 && LookAtDirection.magnitude < .1)
         {
             mCharacterController.setAimState(CharacterController.AimState.Idle);
         }
@@ -114,6 +114,7 @@ public class PlayerController : MonoBehaviour
         {
             mCameraLookForward = Camera.main.transform.forward;
             mCameraLookRight = Camera.main.transform.right;
+            mLastLookDirection = rawLookDirection;
         }
 
         var moveLookDirection = (mCameraLookRight * rawLookDirection.x + mCameraLookForward * rawLookDirection.z).normalized;
@@ -124,18 +125,21 @@ public class PlayerController : MonoBehaviour
         else
             AimMotor.setDirection(transform.forward);
 
-        mLastLookDirection = rawLookDirection;
     }
 
     private void OnUpdateMoveDirection()
     {
         Vector3 rawDirection = new Vector3(MoveToDirection.x, 0, MoveToDirection.y);
 
+       // float differenceX = Mathf.Abs(rawDirection.x - rawDirection.x);
+
         //Only recalcuate forward direction if player moves direction
         if (Vector3.Distance(rawDirection, mLastRawDirection) > 0.2f)
         {
             mCameraForward = Camera.main.transform.forward;
             mCameraRight = Camera.main.transform.right;
+
+            mLastRawDirection = rawDirection;
         }
 
         var moveSmoothDirection = (mCameraRight * rawDirection.x + mCameraForward * rawDirection.z).normalized;
@@ -146,7 +150,7 @@ public class PlayerController : MonoBehaviour
         else
             MovementMotor.setDirection(Vector3.zero);
 
-        mLastRawDirection = rawDirection;
+      
     }
 
     private void OnEnable()
