@@ -75,20 +75,6 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
-                    "m_Id": "36b4aedaeee44896a1a21175b5b2db6d"
-                },
-                "m_SlotId": 2
-            },
-            "m_InputSlot": {
-                "m_Node": {
-                    "m_Id": "cc63eaa7b6fa4cff8dcd5eb0b89cecfc"
-                },
-                "m_SlotId": 2
-            }
-        },
-        {
-            "m_OutputSlot": {
-                "m_Node": {
                     "m_Id": "4007de1d27e34ad78073e99edcee95da"
                 },
                 "m_SlotId": 2
@@ -145,20 +131,6 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
-                    "m_Id": "c8a5f19251c04195919901d4236dd04e"
-                },
-                "m_SlotId": 1
-            },
-            "m_InputSlot": {
-                "m_Node": {
-                    "m_Id": "5b182a679a164ba4bf26970f2460096f"
-                },
-                "m_SlotId": 0
-            }
-        },
-        {
-            "m_OutputSlot": {
-                "m_Node": {
                     "m_Id": "c90e28911976456f9fd3f2b02545198e"
                 },
                 "m_SlotId": 2
@@ -196,6 +168,20 @@
                     "m_Id": "c90e28911976456f9fd3f2b02545198e"
                 },
                 "m_SlotId": 0
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "dba72c7f28334e009a3b09dfc955cf3d"
+                },
+                "m_SlotId": 2
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "cc63eaa7b6fa4cff8dcd5eb0b89cecfc"
+                },
+                "m_SlotId": 2
             }
         },
         {
@@ -575,7 +561,7 @@
     },
     "m_Name": "MainTex",
     "m_DefaultReferenceName": "Texture2D_33921fb8ee00456b949ce4da545c9352",
-    "m_OverrideReferenceName": "",
+    "m_OverrideReferenceName": "_MainTex",
     "m_GeneratePropertyBlock": true,
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
@@ -1481,10 +1467,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -521.0000610351563,
-            "y": -231.0,
-            "width": 208.0,
-            "height": 302.0
+            "x": -439.9999694824219,
+            "y": -280.0000305175781,
+            "width": 126.0,
+            "height": 118.0
         }
     },
     "m_Slots": [
