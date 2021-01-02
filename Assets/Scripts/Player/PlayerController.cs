@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
         //Only recalcuate forward direction if player moves direction
         if (Vector3.Distance(rawLookDirection, mLastLookDirection) > 0.2f)
         {
-            mCameraLookForward = Camera.main.transform.forward;
+            mCameraLookForward = Vector3.forward;//Camera.main.transform.forward;
             mCameraLookRight = Camera.main.transform.right;
             mLastLookDirection = rawLookDirection;
         }
@@ -136,7 +136,7 @@ public class PlayerController : MonoBehaviour
         //Only recalcuate forward direction if player moves direction
         if (Vector3.Distance(rawDirection, mLastRawDirection) > 0.2f)
         {
-            mCameraForward = Camera.main.transform.forward;
+            mCameraForward = Vector3.forward;
             mCameraRight = Camera.main.transform.right;
 
             mLastRawDirection = rawDirection;
