@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
+    public GameplayCameraController mGameplayCameraController;
+
     [Header("Look Settings")]
     public float mouseSpeed = 3;
     private Vector3 lookSmoothDirection;
@@ -27,6 +30,8 @@ public class PlayerController : MonoBehaviour
     private Vector3 mCameraLookRight;
     private Vector3 mLastLookDirection;
 
+    //Current object players has collided with. The collided object will update this obkect
+    private GameObject mAttachableObject;
 
     /**
      * Player Look at Direction
@@ -65,8 +70,11 @@ public class PlayerController : MonoBehaviour
 
         mInput.PlayerControls.Run.performed += ctx => IsRunning = ctx.ReadValueAsButton();
 
-        mInput.PlayerControls.ContextLock.performed += ctx => IsAiming = ctx.ReadValueAsButton();
+        mInput.PlayerControls.ContextLock.performed += ctx => onSetAimState(ctx.ReadValueAsButton());
+
+        mInput.PlayerControls.Interact.performed += ctx => onTryAndAttached(ctx.ReadValueAsButton());
     }
+
     void Start()
     {
         mCharacterController = GetComponent<CharacterController>();
@@ -82,8 +90,13 @@ public class PlayerController : MonoBehaviour
         OnUpdateAimState();
     }
 
+    private void onSetAimState(bool isAiming)
+    {
+        IsAiming = isAiming;
+    }
     private void OnUpdateAimState()
     {
+
         if (MoveToDirection.magnitude < .1 && LookAtDirection.magnitude < .1)
         {
             mCharacterController.setAimState(CharacterController.AimState.Idle);
@@ -96,6 +109,8 @@ public class PlayerController : MonoBehaviour
         if (IsAiming)
         {
             mCharacterController.setAimState(CharacterController.AimState.Aim);
+
+          
         }
     }
 
@@ -152,7 +167,6 @@ public class PlayerController : MonoBehaviour
 
       
     }
-
     private void OnEnable()
     {
         mInput.Enable();
@@ -161,5 +175,43 @@ public class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         mInput.Disable();
+    }
+
+    public void setAttachableObject(GameObject gameObject)
+    {
+        mAttachableObject = gameObject;
+    }
+
+    private void onTryAndAttached(bool attach)
+    {
+        if (attach)
+        {
+            if (mAttachableObject != null)
+            {
+                CoverCollision cover = mAttachableObject.GetComponent<CoverCollision>();
+
+                if (cover != null)
+                {
+                    if (mCharacterController.GetPlayerState == CharacterController.PlayerState.Exploration)
+                    {
+                        mCharacterController.onAttachedCover();
+
+                        if (mGameplayCameraController != null)
+                        {
+                            mGameplayCameraController.onSetCameraState(GameplayCameraController.CameraState.OverShoulderCamera);
+                        }
+                    }
+                    else
+                    {
+                        mCharacterController.onDettachCover();
+
+                        if (mGameplayCameraController != null)
+                        {
+                            mGameplayCameraController.onSetCameraState(GameplayCameraController.CameraState.MainCamera);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
