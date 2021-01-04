@@ -29,6 +29,7 @@ public class CharacterController : MonoBehaviour
     //Players aim state
     private AimState mAimState;
 
+    RaycastWeapon mWeaponRayCast;
 
     public enum AimState
     {
@@ -59,12 +60,18 @@ public class CharacterController : MonoBehaviour
         mAnimator = GetComponent<Animator>();
         mAimMotor = GetComponent<CharacterAimMotor>();
         mMovementMotor = GetComponent<CharacterMotor>();
+        mWeaponRayCast = GetComponentInChildren<RaycastWeapon>();
 
         SPEED_HASH = Animator.StringToHash("Speed");
         ANGLEVELOCITY_HASH = Animator.StringToHash("AngleVelocity");
     }
 
     private void Update()
+    {
+
+    }
+
+    private void LateUpdate()
     {
         switch (mAimState)
         {
@@ -82,8 +89,13 @@ public class CharacterController : MonoBehaviour
                 break;
         }
 
-       OnUpdateChatacterPosition();
-        
+        OnUpdateChatacterPosition();
+
+        if (mWeaponRayCast.isFiring)
+        {
+            mWeaponRayCast.UpdateFiring(Time.deltaTime);
+        }
+        mWeaponRayCast.UpdateBullets(Time.deltaTime);
     }
 
     /**
@@ -143,5 +155,15 @@ public class CharacterController : MonoBehaviour
     public void onUpdateAnimationLocomotion()
     {
         mAnimator.SetInteger("LocomotionState", (int)GetPlayerState);
+    }
+
+    public void onFireWeapon()
+    {
+        mWeaponRayCast.StartFiring();
+    }
+
+    public void OnStopFiringWeapon()
+    {
+        mWeaponRayCast.StopFiriing();
     }
 }

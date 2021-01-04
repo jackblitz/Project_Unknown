@@ -61,6 +61,8 @@ public class PlayerController : MonoBehaviour
     }
     public bool IsAiming { get; private set; }
 
+    private bool IsFiring = false;
+
     private void Awake()
     {
         mInput = new PlayerInputActions();
@@ -73,6 +75,8 @@ public class PlayerController : MonoBehaviour
         mInput.PlayerControls.ContextLock.performed += ctx => onSetAimState(ctx.ReadValueAsButton());
 
         mInput.PlayerControls.Interact.performed += ctx => onTryAndAttached(ctx.ReadValueAsButton());
+
+        mInput.PlayerControls.ContextAttack.performed += ctx => OnAttack(ctx.ReadValueAsButton());
     }
 
     void Start()
@@ -88,6 +92,18 @@ public class PlayerController : MonoBehaviour
         OnUpdateSpeed();
 
         OnUpdateAimState();
+    }
+
+    void LateUpdate()
+    {
+        if (IsFiring)
+        {
+            mCharacterController.onFireWeapon();
+        }
+        else
+        {
+            mCharacterController.OnStopFiringWeapon();
+        }
     }
 
     private void onSetAimState(bool isAiming)
@@ -167,6 +183,12 @@ public class PlayerController : MonoBehaviour
 
       
     }
+
+    public void OnAttack(bool isFiring)
+    {
+        IsFiring = isFiring;
+    }
+
     private void OnEnable()
     {
         mInput.Enable();
