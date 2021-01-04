@@ -39,7 +39,7 @@ public class WeaponItem : Item
     /// <summary>
     /// Gun fire rate. How quickly for bullets fire
     /// </summary>
-    public int FireRate = 25;
+    public float FireRate = 0.5f;
 
     /// <summary>
     /// List of the all the bullets currently in scene
@@ -50,6 +50,7 @@ public class WeaponItem : Item
     public ParticleSystem MuzzelFlash;
     public ParticleSystem HitEffect;
     public Transform RayCastOrigin;
+    public TrailRenderer TracerEffect;
 
     [Header("IK Hand Positions")]
     Transform RightHandPosition;
@@ -60,13 +61,18 @@ public class WeaponItem : Item
     private Ray ray;
     private RaycastHit hitInfo;
 
+    private float accumulatedTime = 0f;
+
+    public bool IsFiring { get; set; }
+
     public void OnPullTrigger()
     {
-        if (canFire())
-        {
-            FireBullet();
-        }
+       IsFiring = true;
+       accumulatedTime = 0;
+           // FireBullet();
+       
     }
+
 
     /// <summary>
     /// Can the weapon currently fire a bullet
@@ -81,18 +87,26 @@ public class WeaponItem : Item
     {
         MuzzelFlash.Emit(1);
 
-        ray.origin = RayCastOrigin.position;
-        ray.direction = RayCastOrigin.forward;
+        Vector3 direction = RayCastOrigin.forward;
+        /* ray.origin = RayCastOrigin.position;
+         //What is the ray shooting at. Could be used for headsets.....
+         Vector3 rayDestination = (RayCastOrigin.forward * 20);
+         ray.direction = RayCastOrigin.forward;//rayDestination - RayCastOrigin.position;
 
-        if(Physics.Raycast(ray, out hitInfo))
-        {
-            Debug.DrawLine(ray.origin, hitInfo.point, Color.white, 1);
-        }
+         if (Physics.Raycast(ray, out hitInfo))
+         {
+             Debug.DrawLine(ray.origin, hitInfo.point, Color.white, 1);
+             HitEffect.transform.position = hitInfo.point;
+             HitEffect.transform.forward = hitInfo.normal;
+             HitEffect.Emit(1);
+         }*/
+        var bullet = CreateBullet(RayCastOrigin.position, direction);
+        BulletsFire.Add(bullet);
     }
 
     public void OnReleaseTrigger()
     {
-
+        IsFiring = false;
     }
 
     public void Reload()
@@ -102,7 +116,67 @@ public class WeaponItem : Item
 
     private void LateUpdate()
     {
-        
+        if (IsFiring)
+        {
+            accumulatedTime += Time.deltaTime;
+            float fireInterval = 1.0f / FireRate;
+            while (accumulatedTime >= 0.0f)
+            {
+                FireBullet();
+                accumulatedTime -= fireInterval;
+            }
+        }
+
+        SimmulateBullets(Time.deltaTime);
+        DestroyBullets();
     }
+    private void DestroyBullets()
+    {
+        BulletsFire.RemoveAll(bullet => bullet.Time >= bullet.MaxLifeTime);
+    }
+
+    private void SimmulateBullets(float deltaTime)
+    {
+        foreach (var bullet in BulletsFire)
+        {
+            Vector3 p0 = bullet.GetPosition();
+            bullet.Time += deltaTime;
+            Vector3 p1 = bullet.GetPosition();
+            RayCastSegment(p0, p1, bullet);
+        }
+    }
+
+    private void RayCastSegment(Vector3 start, Vector3 end, Bullet bullet)
+    {
+        Vector3 direction = (end - start);
+        float distance = direction.magnitude;
+        ray.origin = start;
+        ray.direction = direction;
+
+        if (Physics.Raycast(ray, out hitInfo, distance))
+        {
+            HitEffect.transform.position = hitInfo.point;
+            HitEffect.transform.forward = hitInfo.normal;
+            HitEffect.Emit(1);
+
+            bullet.Tracer.transform.position = hitInfo.point;
+            bullet.Time = bullet.MaxLifeTime;
+        }
+        else
+        {
+            bullet.Tracer.transform.position = end;
+        }
+    }
+
+    public Bullet CreateBullet(Vector3 position, Vector3 direction)
+    {
+        Bullet bullet = new Bullet(direction);
+        bullet.InitialPosition = position;
+        bullet.Time = 0;
+        bullet.Tracer = Instantiate(TracerEffect, position, Quaternion.identity);
+        bullet.Tracer.AddPosition(position);
+        return bullet;
+    }
+
 }
 

@@ -14,7 +14,7 @@ public class Bullet
     /// <summary>
     /// Speed of the bullet travels through world
     /// </summary>
-    public float BulletSpeed = 1000f;
+    public float BulletSpeed = 20;
 
     /// <summary>
     /// The rate of which gravity is applied to bullet
@@ -27,25 +27,20 @@ public class Bullet
     public TrailRenderer Tracer;
 
     public float Time;
+    public float MaxLifeTime = 3f;
     public Vector3 InitialPosition;
     public Vector3 InitialVelocity;
 
-    public static Bullet CreateBullet(TrailRenderer tracerPrefab, Vector3 position, Vector3 velocity)
+    public Bullet(Vector3 direction)
     {
-        Bullet bullet = new Bullet();
-        bullet.InitialPosition = position;
-        bullet.InitialVelocity = velocity;
-        bullet.Time = 0;
-        //bullet.Tracer = Instantiate(tracerPrefab, ray.origin, Quaternion.identity);
-        bullet.Tracer.AddPosition(position);
-        return bullet;
+        InitialVelocity = direction * BulletSpeed;
     }
 
-    Vector3 GetPosition(Bullet bullet)
+    public Vector3 GetPosition()
     {
         Vector3 gravity = Vector3.down * BulletDrop;
-        return bullet.InitialPosition + (bullet.InitialVelocity * bullet.Time) + (0.5f * gravity * bullet.Time * bullet.Time);
-
+        return InitialPosition + (InitialVelocity * Time) + (0.5f * gravity * Time * Time);
     }
+
 }
 
