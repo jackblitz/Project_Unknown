@@ -11,6 +11,7 @@ public class RaycastWeapon : MonoBehaviour
         public Vector3 initialVelocity;
         public TrailRenderer tracer;
     }
+
     public ParticleSystem MuzzelFlash;
     public ParticleSystem HitEffect;
     public Transform RayCastOrigin;

@@ -98,11 +98,11 @@ public class PlayerController : MonoBehaviour
     {
         if (IsFiring)
         {
-            mCharacterController.onFireWeapon();
+            mCharacterController.OnPullTrigger();
         }
         else
         {
-            mCharacterController.OnStopFiringWeapon();
+            mCharacterController.OnReleaseTrigger();
         }
     }
 
@@ -180,7 +180,6 @@ public class PlayerController : MonoBehaviour
             MovementMotor.setDirection(moveSmoothDirection);
         else
             MovementMotor.setDirection(Vector3.zero);
-
       
     }
 

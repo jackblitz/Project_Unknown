@@ -13,6 +13,8 @@ public class CharacterController : MonoBehaviour
 
     private CharacterAimMotor mAimMotor;
     private CharacterMotor mMovementMotor;
+    private WeaponController mWeaponController;
+
     private Animator mAnimator;
 
     private static int SPEED_HASH;
@@ -29,7 +31,7 @@ public class CharacterController : MonoBehaviour
     //Players aim state
     private AimState mAimState;
 
-    RaycastWeapon mWeaponRayCast;
+    
 
     public enum AimState
     {
@@ -60,7 +62,7 @@ public class CharacterController : MonoBehaviour
         mAnimator = GetComponent<Animator>();
         mAimMotor = GetComponent<CharacterAimMotor>();
         mMovementMotor = GetComponent<CharacterMotor>();
-        mWeaponRayCast = GetComponentInChildren<RaycastWeapon>();
+        mWeaponController = GetComponent<WeaponController>();
 
         SPEED_HASH = Animator.StringToHash("Speed");
         ANGLEVELOCITY_HASH = Animator.StringToHash("AngleVelocity");
@@ -90,12 +92,6 @@ public class CharacterController : MonoBehaviour
         }
 
         OnUpdateChatacterPosition();
-
-        if (mWeaponRayCast.isFiring)
-        {
-            mWeaponRayCast.UpdateFiring(Time.deltaTime);
-        }
-        mWeaponRayCast.UpdateBullets(Time.deltaTime);
     }
 
     /**
@@ -157,13 +153,18 @@ public class CharacterController : MonoBehaviour
         mAnimator.SetInteger("LocomotionState", (int)GetPlayerState);
     }
 
-    public void onFireWeapon()
+    public void OnPullTrigger()
     {
-        mWeaponRayCast.StartFiring();
+        if(mWeaponController != null)
+            mWeaponController.OnPullTrigger();
     }
 
-    public void OnStopFiringWeapon()
+    public void OnReleaseTrigger()
     {
-        mWeaponRayCast.StopFiriing();
+        if (mWeaponController)
+        {
+            mWeaponController.OnReleaseTrigger();
+        }
     }
+
 }

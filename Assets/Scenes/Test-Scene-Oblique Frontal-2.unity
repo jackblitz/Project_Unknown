@@ -52319,13 +52319,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 5824925238769256339}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d55299ad16542543bb77e8836b277b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 9e63b96e1e8afc04b8eb3799a4864d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FireRate: 25
   MuzzelFlash: {fileID: 157769164}
   HitEffect: {fileID: 2717941996321839567}
   RayCastOrigin: {fileID: 1842322311}
-  isFiring: 0
+  mWeaponAnimator: {fileID: 0}
 --- !u!4 &5824925238893555980
 Transform:
   m_ObjectHideFlags: 0
@@ -53268,6 +53269,7 @@ GameObject:
   - component: {fileID: 5824925239446837073}
   - component: {fileID: 5824925239446837074}
   - component: {fileID: 5824925239446837075}
+  - component: {fileID: 5824925239223638478}
   m_Layer: 0
   m_Name: MaleDummy
   m_TagString: Player
@@ -53275,6 +53277,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &5824925239223638478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5824925239223638477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bf717c2664cfcb4b81e8bf67939107c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mActiveWeapon: {fileID: 0}
 --- !u!1 &5824925239223638479
 GameObject:
   m_ObjectHideFlags: 0
@@ -55777,11 +55792,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8538188752023996734, guid: 827d8b029dcc0a049b42c2daae7e0611, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.054
+      value: 6.054
       objectReference: {fileID: 0}
     - target: {fileID: 8538188752023996734, guid: 827d8b029dcc0a049b42c2daae7e0611, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.303
+      value: -6.303
       objectReference: {fileID: 0}
     - target: {fileID: 8538188752023996734, guid: 827d8b029dcc0a049b42c2daae7e0611, type: 3}
       propertyPath: m_LocalRotation.w
@@ -55825,7 +55840,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8538188752025605950, guid: 827d8b029dcc0a049b42c2daae7e0611, type: 3}
       propertyPath: far clip plane
-      value: 72
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 8538188752025605950, guid: 827d8b029dcc0a049b42c2daae7e0611, type: 3}
       propertyPath: near clip plane
@@ -55833,7 +55848,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8538188752025605950, guid: 827d8b029dcc0a049b42c2daae7e0611, type: 3}
       propertyPath: orthographic size
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8538188752025605950, guid: 827d8b029dcc0a049b42c2daae7e0611, type: 3}
       propertyPath: m_projectionMatrixMode
