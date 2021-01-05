@@ -42,15 +42,26 @@ public class WeaponItem : Item
     public float FireRate = 0.5f;
 
     /// <summary>
+    /// Guns damage to an object
+    /// </summary>
+    public float GunDamage = 1f;
+
+    /// <summary>
+    /// How hard does the gun hit the object
+    /// </summary>
+    public float HitForce = 100f;
+
+    /// <summary>
     /// List of the all the bullets currently in scene
     /// </summary>
     private List<Bullet> BulletsFire = new List<Bullet>();
 
-    [Header("Weapon Fire Data")]
+    [Header("Weapon UI Data")]
     public ParticleSystem MuzzelFlash;
     public ParticleSystem HitEffect;
     public Transform RayCastOrigin;
     public TrailRenderer TracerEffect;
+    public AudioSource GunAudio;
 
     [Header("IK Hand Positions")]
     Transform RightHandPosition;
@@ -68,8 +79,6 @@ public class WeaponItem : Item
     public void OnPullTrigger()
     {
        IsFiring = true;
-       accumulatedTime = 0;
-           // FireBullet();
        
     }
 
@@ -80,26 +89,19 @@ public class WeaponItem : Item
     /// <returns>Returns true if a bullet can be fired</returns>
     private bool canFire()
     {
-        return true;
+        return accumulatedTime < FireRate;
     }
 
     private void FireBullet()
     {
         MuzzelFlash.Emit(1);
 
-        Vector3 direction = RayCastOrigin.forward;
-        /* ray.origin = RayCastOrigin.position;
-         //What is the ray shooting at. Could be used for headsets.....
-         Vector3 rayDestination = (RayCastOrigin.forward * 20);
-         ray.direction = RayCastOrigin.forward;//rayDestination - RayCastOrigin.position;
+        // Play the shooting sound effect
+        if(GunAudio != null)
+            GunAudio.Play();
 
-         if (Physics.Raycast(ray, out hitInfo))
-         {
-             Debug.DrawLine(ray.origin, hitInfo.point, Color.white, 1);
-             HitEffect.transform.position = hitInfo.point;
-             HitEffect.transform.forward = hitInfo.normal;
-             HitEffect.Emit(1);
-         }*/
+        Vector3 direction = RayCastOrigin.forward;
+
         var bullet = CreateBullet(RayCastOrigin.position, direction);
         BulletsFire.Add(bullet);
     }
@@ -118,12 +120,11 @@ public class WeaponItem : Item
     {
         if (IsFiring)
         {
-            accumulatedTime += Time.deltaTime;
-            float fireInterval = 1.0f / FireRate;
-            while (accumulatedTime >= 0.0f)
+            // Update the time when our player can fire next
+            if (Time.time > accumulatedTime)
             {
+                accumulatedTime = Time.time + FireRate;
                 FireBullet();
-                accumulatedTime -= fireInterval;
             }
         }
 
@@ -161,6 +162,14 @@ public class WeaponItem : Item
 
             bullet.Tracer.transform.position = hitInfo.point;
             bullet.Time = bullet.MaxLifeTime;
+
+
+            // Check if the object we hit has a rigidbody attached
+            if (hitInfo.rigidbody != null)
+            {
+                // Add force to the rigidbody we hit, in the direction from which it was hit
+                hitInfo.rigidbody.AddForce(-hitInfo.normal * HitForce);
+            }
         }
         else
         {
