@@ -14,7 +14,7 @@ public class Bullet
     /// <summary>
     /// Speed of the bullet travels through world
     /// </summary>
-    public float BulletSpeed = 20;
+    public float BulletSpeed = 100;
 
     /// <summary>
     /// The rate of which gravity is applied to bullet
@@ -24,7 +24,8 @@ public class Bullet
     /// <summary>
     /// Bullets tracer effect
     /// </summary>
-    public TrailRenderer Tracer;
+    // public TrailRenderer Tracer;
+    public GameObject Tracer;
 
     public float Time;
     public float MaxLifeTime = 3f;

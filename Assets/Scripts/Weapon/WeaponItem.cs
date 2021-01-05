@@ -61,6 +61,7 @@ public class WeaponItem : Item
     public ParticleSystem HitEffect;
     public Transform RayCastOrigin;
     public TrailRenderer TracerEffect;
+    public GameObject BulletVFX;
     public AudioSource GunAudio;
 
     [Header("IK Hand Positions")]
@@ -133,6 +134,13 @@ public class WeaponItem : Item
     }
     private void DestroyBullets()
     {
+        BulletsFire.ForEach(bullet =>
+        {
+            if(bullet.Time >= bullet.MaxLifeTime)
+            {
+                Destroy(bullet.Tracer);
+            }
+        });
         BulletsFire.RemoveAll(bullet => bullet.Time >= bullet.MaxLifeTime);
     }
 
@@ -182,8 +190,9 @@ public class WeaponItem : Item
         Bullet bullet = new Bullet(direction);
         bullet.InitialPosition = position;
         bullet.Time = 0;
-        bullet.Tracer = Instantiate(TracerEffect, position, Quaternion.identity);
-        bullet.Tracer.AddPosition(position);
+        bullet.Tracer = Instantiate(BulletVFX, position, Quaternion.identity);
+        bullet.Tracer.transform.forward = direction.normalized;
+       // bullet.Tracer.AddPosition(position);
         return bullet;
     }
 
