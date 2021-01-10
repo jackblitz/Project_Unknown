@@ -85,7 +85,10 @@ public class PlayerController : MonoBehaviour
     {
         if (value)
         {
-            mCharacterController.OnReload();
+            if (!mCharacterController.OnInteractWithItem())
+            {
+                mCharacterController.OnReload();
+            }
         }
     }
 
@@ -122,21 +125,13 @@ public class PlayerController : MonoBehaviour
     }
     private void OnUpdateAimState()
     {
-
-        if (MoveToDirection.magnitude < .1 && LookAtDirection.magnitude < .1)
+        if (IsAiming)
         {
-            mCharacterController.setAimState(CharacterController.AimState.Idle);
+            mCharacterController.setAimState(CharacterController.AimState.Aim);
         }
         else
         {
             mCharacterController.setAimState(CharacterController.AimState.Hip);
-        }
-
-        if (IsAiming)
-        {
-            mCharacterController.setAimState(CharacterController.AimState.Aim);
-
-          
         }
     }
 

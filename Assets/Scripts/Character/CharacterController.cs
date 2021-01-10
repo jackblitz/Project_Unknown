@@ -15,6 +15,7 @@ public class CharacterController : MonoBehaviour
     private CharacterMotor mMovementMotor;
     private WeaponController mWeaponController;
 
+
     private Animator mAnimator;
 
     private static int SPEED_HASH;
@@ -33,9 +34,8 @@ public class CharacterController : MonoBehaviour
 
     public enum AimState
     {
-        Idle = 1,
-        Hip = 2,
-        Aim = 3
+        Hip = 1,
+        Aim = 2
     }
 
     public enum PlayerState
@@ -75,17 +75,13 @@ public class CharacterController : MonoBehaviour
     {
         switch (mAimState)
         {
-            case AimState.Idle:
-                mAimlayer.weight = Mathf.Lerp(mAimlayer.weight, 0, Time.deltaTime / AnimDuration);
-                mHiplayer.weight = Mathf.Lerp(mHiplayer.weight, 0, Time.deltaTime / AnimDuration);
-                break;
             case AimState.Hip:
                 mAimlayer.weight = Mathf.Lerp(mAimlayer.weight, 0, Time.deltaTime / AnimDuration);
-                mHiplayer.weight = Mathf.Lerp(mHiplayer.weight, 1, Time.deltaTime / AnimDuration);
+               // mHiplayer.weight = Mathf.Lerp(mHiplayer.weight, 1, Time.deltaTime / AnimDuration);
                 break;
             case AimState.Aim:
                 mAimlayer.weight = Mathf.Lerp(mAimlayer.weight, 1, Time.deltaTime / AimDuration);
-                mHiplayer.weight = Mathf.Lerp(mHiplayer.weight, 0, Time.deltaTime / AnimDuration);
+              //  mHiplayer.weight = Mathf.Lerp(mHiplayer.weight, 0, Time.deltaTime / AnimDuration);
                 break;
         }
 
@@ -171,6 +167,29 @@ public class CharacterController : MonoBehaviour
         {
             mWeaponController.OnReload();
         }
+    }
+
+    private ItemPickUp mInteractableItem;
+    public void OnTriggerItemEntered(GameObject gameObject)
+    {
+        mInteractableItem = gameObject.GetComponent<ItemPickUp>();
+    }
+
+    public void OnTrgggerItemExited(GameObject gameObject)
+    {
+        mInteractableItem = null;
+    }
+
+    public bool OnInteractWithItem()
+    {
+        if(mInteractableItem != null)
+        {
+            Item item = mInteractableItem.OnItemInteract();
+     
+            mWeaponController.OnEquipWeapon((WeaponItem)item);
+            return true;
+        }
+        return false;
     }
 
 }
