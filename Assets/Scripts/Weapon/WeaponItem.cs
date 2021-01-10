@@ -67,7 +67,7 @@ public class WeaponItem : Item
     public AudioSource GunAudio;
 
     [Header("Animation")]
-    public AnimationClip WeaponAnimator;
+    public string WeaponName;
 
     private Ray ray;
     private RaycastHit hitInfo;

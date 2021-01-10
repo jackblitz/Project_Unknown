@@ -19234,7 +19234,7 @@ MonoBehaviour:
   TracerEffect: {fileID: 4643034940065355694, guid: a6ccb8cee191f4b41bdc6b2b6824f6f7, type: 3}
   BulletVFX: {fileID: 4813827264586263113, guid: da9932c81a2e87647b669ccd4ac004a4, type: 3}
   GunAudio: {fileID: 8346578967966781770}
-  WeaponAnimator: {fileID: 7400000, guid: 7bfbc237f06a3ae4e90f02fa64f077dd, type: 2}
+  WeaponName: Rifle
 --- !u!82 &8346578967966781770
 AudioSource:
   m_ObjectHideFlags: 0
