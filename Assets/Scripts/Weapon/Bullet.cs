@@ -1,13 +1,14 @@
-﻿using Unity;
+﻿using System;
+using Unity;
 using UnityEngine;
 
+[Serializable]
 public class Bullet
 {
     public enum BulletType
     {
-        Raycast = 0,
-        Projectile = 1,
-        Explosive = 2,
+        Projectile = 0,
+        Explosive = 1,
     }
     
 

@@ -21,21 +21,23 @@ public class WeaponItem : Item
         Throw = 3
     }
 
+    [Header("Weapon Bullet Data")]
     /// <summary>
-    /// Weapons Fire Type
+    /// Data on the guns clip. Clip size and amount left
     /// </summary>
-    public WeaponType CurrentWeaponType { get; set; }
+    [SerializeField] public Clip ClipData;
 
     /// <summary>
     /// Type of Bullet fire from the Weapon. Contains data on how the bullet interacts with the world
     /// </summary>
-    public Bullet BulletType { get; set; }
+    [SerializeField] public Bullet BulletType;
 
     /// <summary>
-    /// Data on the guns clip. Clip size and amount left
+    /// Weapons Fire Type
     /// </summary>
-    public Clip ClipData { get; set; }
+    [SerializeField] public WeaponType CurrentWeaponType;
 
+    [Header("Weapon Specs")]
     /// <summary>
     /// Gun fire rate. How quickly for bullets fire
     /// </summary>
@@ -56,7 +58,7 @@ public class WeaponItem : Item
     /// </summary>
     private List<Bullet> BulletsFire = new List<Bullet>();
 
-    [Header("Weapon UI Data")]
+    [Header("Weapon Data")]
     public ParticleSystem MuzzelFlash;
     public ParticleSystem HitEffect;
     public Transform RayCastOrigin;
@@ -75,12 +77,12 @@ public class WeaponItem : Item
 
     private float accumulatedTime = 0f;
 
-    public bool IsFiring { get; set; }
+    public bool hasFired { get; private set; }
+    public bool IsPullingTrigger { get; set; }
 
     public void OnPullTrigger()
     {
-       IsFiring = true;
-       
+       IsPullingTrigger = true;
     }
 
 
@@ -88,13 +90,49 @@ public class WeaponItem : Item
     /// Can the weapon currently fire a bullet
     /// </summary>
     /// <returns>Returns true if a bullet can be fired</returns>
-    private bool canFire()
+    private bool CanFire()
     {
-        return accumulatedTime < FireRate;
+        return Time.time > accumulatedTime;
+    }
+
+    /**
+     * If our clip is empty we need to reload clip
+     */
+    private bool RequiresReload() {
+       return (ClipData.BulletsLeft == 0) ? true : false;
+    }
+
+    /**
+     * Does the player need to let go over the trigger to fire next round
+     */
+    private bool RequiresReset()
+    {
+        bool resetHammer = false;
+
+        if (hasFired)
+        {
+            switch (CurrentWeaponType)
+            {
+                case WeaponType.SingleFire:
+                    resetHammer = true;
+                    break;
+                case WeaponType.Semi_Automatic:
+                    resetHammer = (ClipData.BurstCount >= ClipData.BurstRate) ? true : false;
+                    break;
+                case WeaponType.Automatic:
+                    resetHammer = false;
+                    break;
+            }
+        }
+
+        return resetHammer;
     }
 
     private void FireBullet()
     {
+        ClipData.BurstCount++;
+        ClipData.BulletsLeft--;
+
         MuzzelFlash.Emit(1);
 
         // Play the shooting sound effect
@@ -109,24 +147,31 @@ public class WeaponItem : Item
 
     public void OnReleaseTrigger()
     {
-        IsFiring = false;
+        IsPullingTrigger = false;
+        ClipData.BurstCount = 0 ;
     }
 
-    public void Reload()
+    public void OnReload()
     {
-
+        ClipData.BurstCount = 0;
+        ClipData.BulletsLeft = ClipData.ClipSize;
     }
 
     private void LateUpdate()
     {
-        if (IsFiring)
+        if (IsPullingTrigger)
         {
             // Update the time when our player can fire next
-            if (Time.time > accumulatedTime)
+            if (CanFire() && !RequiresReload() && !RequiresReset())
             {
                 accumulatedTime = Time.time + FireRate;
+                hasFired = true;
                 FireBullet();
             }
+        }
+        else
+        {
+            hasFired = false;
         }
 
         SimmulateBullets(Time.deltaTime);

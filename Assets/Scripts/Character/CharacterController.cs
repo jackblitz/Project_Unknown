@@ -31,8 +31,6 @@ public class CharacterController : MonoBehaviour
     //Players aim state
     private AimState mAimState;
 
-    
-
     public enum AimState
     {
         Idle = 1,
@@ -164,6 +162,14 @@ public class CharacterController : MonoBehaviour
         if (mWeaponController)
         {
             mWeaponController.OnReleaseTrigger();
+        }
+    }
+
+    public void OnReload()
+    {
+        if (mWeaponController)
+        {
+            mWeaponController.OnReload();
         }
     }
 

@@ -1229,7 +1229,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh20762
+  m_Name: pb_Mesh20774
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -3028,7 +3028,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh21204
+  m_Name: pb_Mesh21216
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -29019,6 +29019,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5824925238769256338}
   - component: {fileID: 5824925238769256340}
+  - component: {fileID: 5824925238769256341}
   m_Layer: 0
   m_Name: WeaponPivot
   m_TagString: Untagged
@@ -29038,15 +29039,126 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e63b96e1e8afc04b8eb3799a4864d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FireRate: 0.2
+  ClipData:
+    ClipSize: 30
+    BulletsLeft: 30
+    BurstRate: 15
+    BurstCount: 0
+  BulletType:
+    BulletSpeed: 100
+    BulletDrop: 0
+    Tracer: {fileID: 0}
+    Time: 0
+    MaxLifeTime: 3
+    InitialPosition: {x: 0, y: 0, z: 0}
+    InitialVelocity: {x: 0, y: 0, z: 0}
+  CurrentWeaponType: 1
+  FireRate: 0.15
   GunDamage: 1
   HitForce: 100
   MuzzelFlash: {fileID: 157769164}
   HitEffect: {fileID: 2717941996321839567}
   RayCastOrigin: {fileID: 1842322311}
   TracerEffect: {fileID: 4643034940065355694, guid: a6ccb8cee191f4b41bdc6b2b6824f6f7, type: 3}
-  GunAudio: {fileID: 0}
+  BulletVFX: {fileID: 4813827264586263113, guid: da9932c81a2e87647b669ccd4ac004a4, type: 3}
+  GunAudio: {fileID: 5824925238769256341}
   mWeaponAnimator: {fileID: 0}
+--- !u!82 &5824925238769256341
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5824925238769256339}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 4c876eac4e8726c45ab562eda54ef071, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &5824925238893555980
 Transform:
   m_ObjectHideFlags: 0
@@ -32572,7 +32684,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8538188752025605950, guid: 827d8b029dcc0a049b42c2daae7e0611, type: 3}
       propertyPath: m_projectionMatrixMode
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 827d8b029dcc0a049b42c2daae7e0611, type: 3}

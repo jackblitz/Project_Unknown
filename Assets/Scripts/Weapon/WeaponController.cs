@@ -17,7 +17,7 @@ public class WeaponController : MonoBehaviour
 
     public void OnReload()
     {
-
+        mActiveWeapon.OnReload();
     }
 
     public void OnSwitchActiveWeapon(int weapon)

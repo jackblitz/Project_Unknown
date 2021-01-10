@@ -74,9 +74,19 @@ public class PlayerController : MonoBehaviour
 
         mInput.PlayerControls.ContextLock.performed += ctx => onSetAimState(ctx.ReadValueAsButton());
 
-        mInput.PlayerControls.Interact.performed += ctx => onTryAndAttached(ctx.ReadValueAsButton());
+        mInput.PlayerControls.ContextAttach.performed += ctx => onTryAndAttached(ctx.ReadValueAsButton());
 
         mInput.PlayerControls.ContextAttack.performed += ctx => OnAttack(ctx.ReadValueAsButton());
+
+        mInput.PlayerControls.Interact.performed += ctx => OnInteract(ctx.ReadValueAsButton());
+    }
+
+    private void OnInteract(bool value)
+    {
+        if (value)
+        {
+            mCharacterController.OnReload();
+        }
     }
 
     void Start()
