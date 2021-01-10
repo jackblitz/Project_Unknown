@@ -66,11 +66,8 @@ public class WeaponItem : Item
     public GameObject BulletVFX;
     public AudioSource GunAudio;
 
-    [Header("IK Hand Positions")]
-    Transform RightHandPosition;
-    Transform LeftHandPosition;
-
-    public Animator mWeaponAnimator;
+    [Header("Animation")]
+    public AnimationClip WeaponAnimator;
 
     private Ray ray;
     private RaycastHit hitInfo;
