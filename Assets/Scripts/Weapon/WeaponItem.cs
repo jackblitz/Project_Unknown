@@ -70,6 +70,7 @@ public class WeaponItem : Item
 
     [Header("Animation")]
     public string WeaponName;
+    public WeaponRecoil WeaponRecoil;
 
     private Ray ray;
     private RaycastHit hitInfo;
@@ -80,6 +81,11 @@ public class WeaponItem : Item
     public bool IsPullingTrigger = false;
 
     public bool isHolstered = true;
+
+    private void Awake()
+    {
+        WeaponRecoil = GetComponent<WeaponRecoil>();
+    }
 
     public void OnPullTrigger()
     {
@@ -144,6 +150,8 @@ public class WeaponItem : Item
 
         var bullet = CreateBullet(RayCastOrigin.position, direction);
         BulletsFire.Add(bullet);
+
+        WeaponRecoil.GenerateRecoil(WeaponName);
     }
 
     public void OnReleaseTrigger()

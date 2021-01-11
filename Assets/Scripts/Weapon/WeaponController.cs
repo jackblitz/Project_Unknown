@@ -126,6 +126,7 @@ public class WeaponController : MonoBehaviour
         }
 
         weapon = weaponItem;
+        weapon.WeaponRecoil.RigController = RigController; 
         weapon.transform.SetParent(WeaponSlots[weaponSlotIndex], false);
 
         EquippedWeapons[weaponSlotIndex] = weapon;

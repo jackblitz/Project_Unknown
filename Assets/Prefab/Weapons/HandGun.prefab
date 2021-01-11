@@ -19079,6 +19079,7 @@ GameObject:
   - component: {fileID: 8346578967966781773}
   - component: {fileID: 8346578967966781771}
   - component: {fileID: 8346578967966781770}
+  - component: {fileID: -7554982013477691832}
   m_Layer: 0
   m_Name: HandGun
   m_TagString: Untagged
@@ -19124,6 +19125,8 @@ MonoBehaviour:
   BulletType:
     BulletSpeed: 100
     BulletDrop: 0
+    MaxBounce: 0
+    BounceCount: 0
     Tracer: {fileID: 0}
     Time: 0
     MaxLifeTime: 3
@@ -19141,6 +19144,8 @@ MonoBehaviour:
   BulletVFX: {fileID: 4813827264586263113, guid: da9932c81a2e87647b669ccd4ac004a4, type: 3}
   GunAudio: {fileID: 8346578967966781770}
   WeaponName: Pistol
+  IsPullingTrigger: 0
+  isHolstered: 1
 --- !u!82 &8346578967966781770
 AudioSource:
   m_ObjectHideFlags: 0
@@ -19237,6 +19242,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-7554982013477691832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8346578967966781772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eceb2a7222edac4e8521a34baaf2cb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2522943768840912305
 PrefabInstance:
   m_ObjectHideFlags: 0

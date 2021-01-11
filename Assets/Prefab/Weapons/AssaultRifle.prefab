@@ -19174,6 +19174,7 @@ GameObject:
   - component: {fileID: 8346578967966781773}
   - component: {fileID: 8346578967966781771}
   - component: {fileID: 8346578967966781770}
+  - component: {fileID: 2987898784103390902}
   m_Layer: 0
   m_Name: AssaultRifle
   m_TagString: Untagged
@@ -19336,6 +19337,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2987898784103390902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8346578967966781772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eceb2a7222edac4e8521a34baaf2cb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8346578968143204000
 GameObject:
   m_ObjectHideFlags: 0
