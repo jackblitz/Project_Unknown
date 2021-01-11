@@ -53,6 +53,8 @@ public class WeaponItem : Item
     /// </summary>
     public float HitForce = 100f;
 
+    public WeaponController.WeaponSlot WeaponSlot;
+
     /// <summary>
     /// List of the all the bullets currently in scene
     /// </summary>
@@ -75,7 +77,9 @@ public class WeaponItem : Item
     private float accumulatedTime = 0f;
 
     public bool hasFired { get; private set; }
-    public bool IsPullingTrigger { get; set; }
+    public bool IsPullingTrigger = false;
+
+    public bool isHolstered = true;
 
     public void OnPullTrigger()
     {
@@ -156,7 +160,7 @@ public class WeaponItem : Item
 
     private void LateUpdate()
     {
-        if (IsPullingTrigger)
+        if (IsPullingTrigger && !isHolstered)
         {
             // Update the time when our player can fire next
             if (CanFire() && !RequiresReload() && !RequiresReset())
@@ -174,6 +178,27 @@ public class WeaponItem : Item
         SimmulateBullets(Time.deltaTime);
         DestroyBullets();
     }
+
+   /* public void UpdateWeapon(float delta)
+    {
+        if (IsPullingTrigger)
+        {
+            // Update the time when our player can fire next
+            if (CanFire() && !RequiresReload() && !RequiresReset())
+            {
+                accumulatedTime = Time.time + FireRate;
+                hasFired = true;
+                FireBullet();
+            }
+        }
+        else
+        {
+            hasFired = false;
+        }
+
+        SimmulateBullets(delta);
+        DestroyBullets();
+    }*/
     private void DestroyBullets()
     {
         BulletsFire.ForEach(bullet =>
@@ -213,12 +238,22 @@ public class WeaponItem : Item
             bullet.Tracer.transform.position = hitInfo.point;
             bullet.Time = bullet.MaxLifeTime;
 
+            if(bullet.BounceCount > 0)
+            {
+                bullet.Time = 0;
+                bullet.InitialPosition = hitInfo.point;
+                bullet.InitialVelocity = Vector3.Reflect(bullet.InitialVelocity, hitInfo.normal);
+                bullet.BounceCount--;
+            }
+
 
             // Check if the object we hit has a rigidbody attached
-            if (hitInfo.rigidbody != null)
+            var rigidBody = hitInfo.collider.GetComponent<Rigidbody>();
+            if (rigidBody != null)
             {
                 // Add force to the rigidbody we hit, in the direction from which it was hit
-                hitInfo.rigidbody.AddForce(-hitInfo.normal * HitForce);
+                // hitInfo.rigidbody.AddForce(-hitInfo.normal * HitForce);
+                rigidBody.AddForceAtPosition(ray.direction * 20, hitInfo.point, ForceMode.Impulse);
             }
         }
         else
@@ -234,6 +269,7 @@ public class WeaponItem : Item
         bullet.Time = 0;
         bullet.Tracer = Instantiate(BulletVFX, position, Quaternion.identity);
         bullet.Tracer.transform.forward = direction.normalized;
+        bullet.BounceCount = bullet.MaxBounce;
        // bullet.Tracer.AddPosition(position);
         return bullet;
     }

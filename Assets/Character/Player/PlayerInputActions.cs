@@ -89,6 +89,30 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""WeaponWheelRight"",
+                    ""type"": ""Button"",
+                    ""id"": ""8d962215-d924-45a8-bb61-617939d7d2b1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""WeaponWheelLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""c41bfef0-6249-4188-b448-86d4846a280a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""HolsterWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""c0163dc5-c9f8-4fc4-a4d9-c2ed9da380df"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -322,6 +346,39 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""action"": ""Context Lock"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""751efc60-75ce-4f31-88d6-af71c9c1dfb1"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponWheelRight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""af701111-6759-4ddd-a423-334c9cfcad1f"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponWheelLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""748f7bde-ce12-41e1-9551-3cdcfdb6f285"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HolsterWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -388,6 +445,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         m_PlayerControls_ContextAttach = m_PlayerControls.FindAction("Context Attach", throwIfNotFound: true);
         m_PlayerControls_ContextAttack = m_PlayerControls.FindAction("Context Attack", throwIfNotFound: true);
         m_PlayerControls_ContextLock = m_PlayerControls.FindAction("Context Lock", throwIfNotFound: true);
+        m_PlayerControls_WeaponWheelRight = m_PlayerControls.FindAction("WeaponWheelRight", throwIfNotFound: true);
+        m_PlayerControls_WeaponWheelLeft = m_PlayerControls.FindAction("WeaponWheelLeft", throwIfNotFound: true);
+        m_PlayerControls_HolsterWeapon = m_PlayerControls.FindAction("HolsterWeapon", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_ContextStart = m_Menu.FindAction("Context Start", throwIfNotFound: true);
@@ -449,6 +509,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerControls_ContextAttach;
     private readonly InputAction m_PlayerControls_ContextAttack;
     private readonly InputAction m_PlayerControls_ContextLock;
+    private readonly InputAction m_PlayerControls_WeaponWheelRight;
+    private readonly InputAction m_PlayerControls_WeaponWheelLeft;
+    private readonly InputAction m_PlayerControls_HolsterWeapon;
     public struct PlayerControlsActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -462,6 +525,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         public InputAction @ContextAttach => m_Wrapper.m_PlayerControls_ContextAttach;
         public InputAction @ContextAttack => m_Wrapper.m_PlayerControls_ContextAttack;
         public InputAction @ContextLock => m_Wrapper.m_PlayerControls_ContextLock;
+        public InputAction @WeaponWheelRight => m_Wrapper.m_PlayerControls_WeaponWheelRight;
+        public InputAction @WeaponWheelLeft => m_Wrapper.m_PlayerControls_WeaponWheelLeft;
+        public InputAction @HolsterWeapon => m_Wrapper.m_PlayerControls_HolsterWeapon;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -498,6 +564,15 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @ContextLock.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnContextLock;
                 @ContextLock.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnContextLock;
                 @ContextLock.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnContextLock;
+                @WeaponWheelRight.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnWeaponWheelRight;
+                @WeaponWheelRight.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnWeaponWheelRight;
+                @WeaponWheelRight.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnWeaponWheelRight;
+                @WeaponWheelLeft.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnWeaponWheelLeft;
+                @WeaponWheelLeft.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnWeaponWheelLeft;
+                @WeaponWheelLeft.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnWeaponWheelLeft;
+                @HolsterWeapon.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnHolsterWeapon;
+                @HolsterWeapon.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnHolsterWeapon;
+                @HolsterWeapon.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnHolsterWeapon;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -529,6 +604,15 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @ContextLock.started += instance.OnContextLock;
                 @ContextLock.performed += instance.OnContextLock;
                 @ContextLock.canceled += instance.OnContextLock;
+                @WeaponWheelRight.started += instance.OnWeaponWheelRight;
+                @WeaponWheelRight.performed += instance.OnWeaponWheelRight;
+                @WeaponWheelRight.canceled += instance.OnWeaponWheelRight;
+                @WeaponWheelLeft.started += instance.OnWeaponWheelLeft;
+                @WeaponWheelLeft.performed += instance.OnWeaponWheelLeft;
+                @WeaponWheelLeft.canceled += instance.OnWeaponWheelLeft;
+                @HolsterWeapon.started += instance.OnHolsterWeapon;
+                @HolsterWeapon.performed += instance.OnHolsterWeapon;
+                @HolsterWeapon.canceled += instance.OnHolsterWeapon;
             }
         }
     }
@@ -595,6 +679,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         void OnContextAttach(InputAction.CallbackContext context);
         void OnContextAttack(InputAction.CallbackContext context);
         void OnContextLock(InputAction.CallbackContext context);
+        void OnWeaponWheelRight(InputAction.CallbackContext context);
+        void OnWeaponWheelLeft(InputAction.CallbackContext context);
+        void OnHolsterWeapon(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

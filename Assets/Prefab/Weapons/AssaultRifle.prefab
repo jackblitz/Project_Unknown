@@ -19219,6 +19219,8 @@ MonoBehaviour:
   BulletType:
     BulletSpeed: 100
     BulletDrop: 0
+    MaxBounce: 0
+    BounceCount: 0
     Tracer: {fileID: 0}
     Time: 0
     MaxLifeTime: 3
@@ -19228,6 +19230,7 @@ MonoBehaviour:
   FireRate: 0.15
   GunDamage: 1
   HitForce: 100
+  WeaponSlot: 0
   MuzzelFlash: {fileID: 2432804626563047659}
   HitEffect: {fileID: 485080502341308176}
   RayCastOrigin: {fileID: 2522943768717102424}
@@ -19235,6 +19238,8 @@ MonoBehaviour:
   BulletVFX: {fileID: 4813827264586263113, guid: da9932c81a2e87647b669ccd4ac004a4, type: 3}
   GunAudio: {fileID: 8346578967966781770}
   WeaponName: Rifle
+  IsPullingTrigger: 0
+  isHolstered: 1
 --- !u!82 &8346578967966781770
 AudioSource:
   m_ObjectHideFlags: 0

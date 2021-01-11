@@ -23,6 +23,13 @@ public class Bullet
     public float BulletDrop = 0.0f;
 
     /// <summary>
+    /// Max number of times the bullet can bounce
+    /// </summary>
+    public float MaxBounce = 0;
+
+    public float BounceCount = 0;
+
+    /// <summary>
     /// Bullets tracer effect
     /// </summary>
     // public TrailRenderer Tracer;

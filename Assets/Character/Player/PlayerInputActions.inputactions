@@ -76,6 +76,30 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "WeaponWheelRight",
+                    "type": "Button",
+                    "id": "8d962215-d924-45a8-bb61-617939d7d2b1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "WeaponWheelLeft",
+                    "type": "Button",
+                    "id": "c41bfef0-6249-4188-b448-86d4846a280a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "HolsterWeapon",
+                    "type": "Button",
+                    "id": "c0163dc5-c9f8-4fc4-a4d9-c2ed9da380df",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -307,6 +331,39 @@
                     "processors": "",
                     "groups": "GamePad",
                     "action": "Context Lock",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "751efc60-75ce-4f31-88d6-af71c9c1dfb1",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WeaponWheelRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "af701111-6759-4ddd-a423-334c9cfcad1f",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WeaponWheelLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "748f7bde-ce12-41e1-9551-3cdcfdb6f285",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "HolsterWeapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -19133,6 +19133,7 @@ MonoBehaviour:
   FireRate: 0.15
   GunDamage: 1
   HitForce: 100
+  WeaponSlot: 1
   MuzzelFlash: {fileID: 2432804626563047659}
   HitEffect: {fileID: 485080502341308176}
   RayCastOrigin: {fileID: 2522943768717102424}

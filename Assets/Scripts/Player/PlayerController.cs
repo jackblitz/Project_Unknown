@@ -79,6 +79,10 @@ public class PlayerController : MonoBehaviour
         mInput.PlayerControls.ContextAttack.performed += ctx => OnAttack(ctx.ReadValueAsButton());
 
         mInput.PlayerControls.Interact.performed += ctx => OnInteract(ctx.ReadValueAsButton());
+
+        mInput.PlayerControls.WeaponWheelRight.performed += ctx => OnRightWeaponWheel(ctx.ReadValueAsButton());
+        mInput.PlayerControls.WeaponWheelLeft.performed += ctx => OnLeftWeaponWheel(ctx.ReadValueAsButton());
+        mInput.PlayerControls.HolsterWeapon.performed += ctx => OnHolsterWeapon(ctx.ReadValueAsButton());
     }
 
     private void OnInteract(bool value)
@@ -89,6 +93,29 @@ public class PlayerController : MonoBehaviour
             {
                 mCharacterController.OnReload();
             }
+        }
+    }
+
+    private void OnRightWeaponWheel(bool value)
+    {
+        if (value)
+        {
+            mCharacterController.OnNextWeapon();
+        }
+    }
+
+    private void OnLeftWeaponWheel(bool value)
+    {
+        if (value)
+        {
+            mCharacterController.OnPreviousWeapon();
+        }
+    }
+    private void OnHolsterWeapon(bool value)
+    {
+        if (value)
+        {
+            mCharacterController.OnHolsterWeapon();
         }
     }
 

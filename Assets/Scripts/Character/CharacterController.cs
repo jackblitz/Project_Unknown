@@ -192,4 +192,22 @@ public class CharacterController : MonoBehaviour
         return false;
     }
 
+    public void OnNextWeapon()
+    {
+        if (mWeaponController != null)
+            mWeaponController.OnNextWeapon();
+    }
+
+    public void OnPreviousWeapon()
+    {
+        if (mWeaponController != null)
+            mWeaponController.OnPreviousWeapon();
+    }
+
+    public void OnHolsterWeapon()
+    {
+        if (mWeaponController != null)
+            mWeaponController.HolsterActiveWeapon();
+    }
+
 }
