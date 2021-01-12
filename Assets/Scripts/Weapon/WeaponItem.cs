@@ -64,6 +64,7 @@ public class WeaponItem : Item
     public ParticleSystem MuzzelFlash;
     public ParticleSystem HitEffect;
     public Transform RayCastOrigin;
+    public Transform RayCastDestination; // Exactly location to shoot at
     public TrailRenderer TracerEffect;
     public GameObject BulletVFX;
     public AudioSource GunAudio;
@@ -146,7 +147,7 @@ public class WeaponItem : Item
         if(GunAudio != null)
             GunAudio.Play();
 
-        Vector3 direction = RayCastOrigin.forward;
+        Vector3 direction = (RayCastDestination.position - RayCastOrigin.position).normalized;
 
         var bullet = CreateBullet(RayCastOrigin.position, direction);
         BulletsFire.Add(bullet);
@@ -245,8 +246,8 @@ public class WeaponItem : Item
 
             bullet.Tracer.transform.position = hitInfo.point;
             bullet.Time = bullet.MaxLifeTime;
-
-            if(bullet.BounceCount > 0)
+            
+            if (bullet.BounceCount > 0)
             {
                 bullet.Time = 0;
                 bullet.InitialPosition = hitInfo.point;
@@ -276,7 +277,7 @@ public class WeaponItem : Item
         bullet.InitialPosition = position;
         bullet.Time = 0;
         bullet.Tracer = Instantiate(BulletVFX, position, Quaternion.identity);
-        bullet.Tracer.transform.forward = direction.normalized;
+        bullet.Tracer.transform.forward = direction;
         bullet.BounceCount = bullet.MaxBounce;
        // bullet.Tracer.AddPosition(position);
         return bullet;

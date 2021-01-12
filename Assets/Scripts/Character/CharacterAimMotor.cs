@@ -26,7 +26,7 @@ public class CharacterAimMotor : MonoBehaviour
         // float Angle = CalculateRotationDestination();
         float currentAngle = Vector3.SignedAngle(transform.forward, Position, Vector3.up);
         float facingAngle = Vector3.SignedAngle(transform.forward, Direction, Vector3.up);   //Vector3.Angle(transform.forward, Direction);
-        float clampedAngle = Mathf.Clamp(facingAngle, -140, 140);
+        float clampedAngle = Mathf.Clamp(facingAngle, -160, 160);
 
         float Angle = clampedAngle;
       /*  //If we are flip minus counter clock wise to positive 

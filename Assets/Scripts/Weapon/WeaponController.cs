@@ -22,7 +22,7 @@ public class WeaponController : MonoBehaviour
     public Transform WeaponRightGrip;
     public Animator RigController;
 
-
+    public Transform WeaponTarget;
     private void Start()
     {
         WeaponItem hasWeapon = GetComponentInChildren<WeaponItem>();
@@ -126,6 +126,7 @@ public class WeaponController : MonoBehaviour
         }
 
         weapon = weaponItem;
+        weapon.RayCastDestination = WeaponTarget;
         weapon.WeaponRecoil.RigController = RigController; 
         weapon.transform.SetParent(WeaponSlots[weaponSlotIndex], false);
 
@@ -153,7 +154,7 @@ public class WeaponController : MonoBehaviour
         int holsterIndex = mActiveWeaponIndex;
         int activateIndex = (int)weaponSlotIndex;
         
-        if(holsterIndex == mActiveWeaponIndex)
+        if(holsterIndex == activateIndex)
         {
             holsterIndex = -1;
         }
@@ -181,15 +182,13 @@ public class WeaponController : MonoBehaviour
       
         if (weapon)
         {
-            weapon.isHolstered = true;
-            RigController.SetBool("holster_weapon", true);
-
-            //TODO fix hack. This should keep looking into how much time is left in the animation
-            yield return new WaitForSeconds(RigController.GetCurrentAnimatorStateInfo(0).length);
-
-            /* while (RigController.GetCurrentAnimatorStateInfo(0). < RigController.GetCurrentAnimatorStateInfo(0).length){
-                 yield return new WaitForEndOfFrame();
-             }*/
+            if (!weapon.isHolstered)
+            {
+                weapon.isHolstered = true;
+                RigController.SetBool("holster_weapon", true);
+                //TODO fix hack. This should keep looking into how much time is left in the animation
+                yield return new WaitForSeconds(RigController.GetCurrentAnimatorStateInfo(0).length);
+            }
         }
     }
 
