@@ -20,6 +20,7 @@ public class WeaponController : MonoBehaviour
 
     public Transform WeaponLeftGrip;
     public Transform WeaponRightGrip;
+    public Transform LeftHandBone;
     public Animator RigController;
 
     public Transform WeaponTarget;
@@ -80,10 +81,15 @@ public class WeaponController : MonoBehaviour
 
     public void OnReload()
     {
+        //Animation in rig controller will notify the weapon of its reload state 
         WeaponItem activeWeapon = getActiveWeapon();
         if (activeWeapon != null)
         {
-            activeWeapon.OnReload();
+            if (!activeWeapon.isHolstered)
+            {
+                RigController.SetTrigger("reload_weapon");
+                activeWeapon.IsReloading = true;
+            }
         }
     }
 
@@ -127,7 +133,9 @@ public class WeaponController : MonoBehaviour
 
         weapon = weaponItem;
         weapon.RayCastDestination = WeaponTarget;
-        weapon.WeaponRecoil.RigController = RigController; 
+        weapon.WeaponRecoil.RigController = RigController;
+        weapon.AnimationEvents = GetComponentInChildren<WeaponAimationEvent>();
+        weapon.LeftHand = LeftHandBone;
         weapon.transform.SetParent(WeaponSlots[weaponSlotIndex], false);
 
         EquippedWeapons[weaponSlotIndex] = weapon;
@@ -171,9 +179,9 @@ public class WeaponController : MonoBehaviour
     /// <returns></returns>
     IEnumerator SwitchWeapon(int holsterIndex, int activeIndex)
     {
+        mActiveWeaponIndex = activeIndex;
         yield return StartCoroutine(HolsterWeapon(holsterIndex));
         yield return StartCoroutine(ActivateWeapon(activeIndex));
-        mActiveWeaponIndex = activeIndex;
     }
 
     IEnumerator HolsterWeapon(int index)

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnityEngine;
 
 [Serializable]
 public class Clip
@@ -27,5 +24,9 @@ public class Clip
     /// </summary>
     public int BurstCount = 0;
 
+    /// <summary>
+    /// Reference to Guns Magazine model
+    /// </summary>
+    public GameObject Magazine;
 }
 

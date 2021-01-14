@@ -1219,7 +1219,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh20782
+  m_Name: pb_Mesh20786
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -5524,7 +5524,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh21298
+  m_Name: pb_Mesh21308
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -6785,6 +6785,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1589224498}
   - component: {fileID: 1589224499}
+  - component: {fileID: 1589224500}
   m_Layer: 0
   m_Name: ----RigLayer----
   m_TagString: Untagged
@@ -6830,6 +6831,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1589224500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589224497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90c56af5f9ade246a617780f79060e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1590814794
 GameObject:
   m_ObjectHideFlags: 0
@@ -10964,6 +10977,7 @@ MonoBehaviour:
   - {fileID: 1084888157}
   WeaponLeftGrip: {fileID: 5824925239463337775}
   WeaponRightGrip: {fileID: 5824925240476373553}
+  LeftHandBone: {fileID: 5824925239223928303}
   RigController: {fileID: 1589224499}
   WeaponTarget: {fileID: 1635464809}
 --- !u!1 &5824925239223638479

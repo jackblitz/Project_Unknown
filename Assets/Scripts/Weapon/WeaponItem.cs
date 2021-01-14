@@ -72,6 +72,9 @@ public class WeaponItem : Item
     [Header("Animation")]
     public string WeaponName;
     public WeaponRecoil WeaponRecoil;
+    public WeaponAimationEvent AnimationEvents;
+    //Reference to left hand location
+    public Transform LeftHand;
 
     private Ray ray;
     private RaycastHit hitInfo;
@@ -80,13 +83,101 @@ public class WeaponItem : Item
 
     public bool hasFired { get; private set; }
     public bool IsPullingTrigger = false;
-
+    public bool IsReloading = false;
     public bool isHolstered = true;
 
     private void Awake()
     {
         WeaponRecoil = GetComponent<WeaponRecoil>();
     }
+
+    private void Start()
+    {
+        AnimationEvents.WeaponAnimationEvent.AddListener(OnAnimationEvent);
+    }
+
+    /// <summary>
+    /// All Animation events for Weapon come through here
+    /// </summary>
+    /// <param name="animationEvent">What are animating. Reloading, recoil, drop, pick up......</param>
+    /// <param name="animationState">State of the animation event. Each animation event can have a state</param>
+    private void OnAnimationEvent(string animationEvent, int animationState)
+    {
+        switch (animationEvent)
+        {
+            case WeaponAimationEvent.WEAPON_RELOAD:
+                OnWeaponReloadEvents(animationState);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// All reload events from the animation controller roll through here
+    /// </summary>
+    /// <param name="state">Current State of the Animation</param>
+    private void OnWeaponReloadEvents(int state)
+    {
+        if (isHolstered)
+            return;
+        switch (state)
+        {
+            case (int)WeaponAimationEvent.WeaponReloadEventState.Detach_Mag:
+                OnDetachMagazine();
+                break;
+            case (int)WeaponAimationEvent.WeaponReloadEventState.Drop_Mag:
+                OnDropMagazine();
+                break;
+            case (int)WeaponAimationEvent.WeaponReloadEventState.Refill_Mag:
+                OnRefillMagazine();
+                break;
+            case (int)WeaponAimationEvent.WeaponReloadEventState.Attach_Mag:
+                OnAttachMagazine();
+                break;
+            case (int)WeaponAimationEvent.WeaponReloadEventState.Complete:
+                OnReload();
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Called via an animation event. Animation has notified us that the animation has attached the magazine
+    /// </summary>
+    private void OnAttachMagazine()
+    {
+        ClipData.Magazine.SetActive(true);
+        Destroy(MagazineHand);
+        WeaponRecoil.RigController.ResetTrigger("reload_weapon");
+    }
+
+    /// <summary>
+    /// Called via an animation event. Animation has notified us that the animation in a refill state
+    /// </summary>
+    private void OnRefillMagazine()
+    {
+        MagazineHand.SetActive(true);
+    }
+
+    /// <summary>
+    /// Called via an animation event. Animation has notified us that the animation is about to drop the magazine
+    /// </summary>
+    private void OnDropMagazine()
+    {
+        GameObject droppedMagazine = Instantiate(MagazineHand, MagazineHand.transform.position, MagazineHand.transform.rotation);
+        droppedMagazine.AddComponent<Rigidbody>();
+        droppedMagazine.AddComponent<BoxCollider>();
+        MagazineHand.SetActive(false);
+    }
+
+    /// <summary>
+    /// Called via an animation event. Animation has notified us that the animation detaching the magizine
+    /// </summary>
+    private GameObject MagazineHand;
+    private void OnDetachMagazine()
+    {
+        MagazineHand = Instantiate(ClipData.Magazine, LeftHand, true);
+        ClipData.Magazine.SetActive(false);
+    }
+
 
     public void OnPullTrigger()
     {
@@ -163,8 +254,9 @@ public class WeaponItem : Item
 
     public void OnReload()
     {
-        ClipData.BurstCount = 0;
-        ClipData.BulletsLeft = ClipData.ClipSize;
+       ClipData.BurstCount = 0;
+       ClipData.BulletsLeft = ClipData.ClipSize;
+       IsReloading = false;
     }
 
     private void LateUpdate()
@@ -172,7 +264,7 @@ public class WeaponItem : Item
         if (IsPullingTrigger && !isHolstered)
         {
             // Update the time when our player can fire next
-            if (CanFire() && !RequiresReload() && !RequiresReset())
+            if (CanFire() && !RequiresReload() && !RequiresReset() && !IsReloading)
             {
                 accumulatedTime = Time.time + FireRate;
                 hasFired = true;
