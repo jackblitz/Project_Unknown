@@ -33,12 +33,12 @@ public class Bullet
     /// Bullets tracer effect
     /// </summary>
     // public TrailRenderer Tracer;
-    public GameObject Tracer;
+    [HideInInspector] public GameObject Tracer;
 
-    public float Time;
+    [HideInInspector] public float Time;
     public float MaxLifeTime = 3f;
-    public Vector3 InitialPosition;
-    public Vector3 InitialVelocity;
+    [HideInInspector] public Vector3 InitialPosition;
+    [HideInInspector] public Vector3 InitialVelocity;
 
     public Bullet(Vector3 direction)
     {

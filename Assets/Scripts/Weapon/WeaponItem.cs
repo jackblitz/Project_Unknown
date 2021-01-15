@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 /// WeaponItem: Contain information and data on the weapon
@@ -68,13 +69,15 @@ public class WeaponItem : Item
     public TrailRenderer TracerEffect;
     public GameObject BulletVFX;
     public AudioSource GunAudio;
+    public Sprite UIView;
 
     [Header("Animation")]
     public string WeaponName;
     public WeaponRecoil WeaponRecoil;
-    public WeaponAimationEvent AnimationEvents;
+    [HideInInspector] public WeaponAimationEvent AnimationEvents;
     //Reference to left hand location
-    public Transform LeftHand;
+    [HideInInspector] public Transform LeftHand;
+    [HideInInspector] public WeaponControllerEvent WeaponEvents = new WeaponControllerEvent();
 
     private Ray ray;
     private RaycastHit hitInfo;
@@ -86,6 +89,52 @@ public class WeaponItem : Item
     public bool IsReloading = false;
     public bool isHolstered = true;
 
+    #region Can Fire Bullet Rules
+    /// <summary>
+    /// Can the weapon currently fire a bullet
+    /// </summary>
+    /// <returns>Returns true if a bullet can be fired</returns>
+    private bool CanFire()
+    {
+        return Time.time > accumulatedTime;
+    }
+
+    /**
+     * If our clip is empty we need to reload clip
+     */
+    private bool RequiresReload()
+    {
+        return (ClipData.BulletsLeft == 0) ? true : false;
+    }
+
+    /**
+     * Does the player need to let go over the trigger to fire next round
+     */
+    private bool RequiresReset()
+    {
+        bool resetHammer = false;
+
+        if (hasFired)
+        {
+            switch (CurrentWeaponType)
+            {
+                case WeaponType.SingleFire:
+                    resetHammer = true;
+                    break;
+                case WeaponType.Semi_Automatic:
+                    resetHammer = (ClipData.BurstCount >= ClipData.BurstRate) ? true : false;
+                    break;
+                case WeaponType.Automatic:
+                    resetHammer = false;
+                    break;
+            }
+        }
+
+        return resetHammer;
+    }
+
+    #endregion
+
     private void Awake()
     {
         WeaponRecoil = GetComponent<WeaponRecoil>();
@@ -95,6 +144,72 @@ public class WeaponItem : Item
     {
         AnimationEvents.WeaponAnimationEvent.AddListener(OnAnimationEvent);
     }
+
+    /// <summary>
+    /// Always called when the player is holding down the trigger
+    /// </summary>
+    public void OnPullTrigger()
+    {
+       IsPullingTrigger = true;
+    }
+
+
+    public void OnReleaseTrigger()
+    {
+        IsPullingTrigger = false;
+        ClipData.BurstCount = 0;
+    }
+
+
+    private void FireBullet()
+    {
+        ClipData.OnShotFired();
+
+        MuzzelFlash.Emit(1);
+
+        // Play the shooting sound effect
+        if(GunAudio != null)
+            GunAudio.Play();
+
+        Vector3 direction = (RayCastDestination.position - RayCastOrigin.position).normalized;
+
+        var bullet = CreateBullet(RayCastOrigin.position, direction);
+        BulletsFire.Add(bullet);
+
+        WeaponRecoil.GenerateRecoil(WeaponName);
+
+        WeaponEvents.OnBulletCountChanged(this);
+    }
+
+    public void OnReload()
+    {
+       ClipData.OnReloadClip();
+       IsReloading = false;
+       WeaponEvents.OnWeaponReloaded(this);
+    }
+
+    private void LateUpdate()
+    {
+        if (IsPullingTrigger && !isHolstered)
+        {
+            // Update the time when our player can fire next
+            if (CanFire() && !RequiresReload() && !RequiresReset() && !IsReloading)
+            {
+                accumulatedTime = Time.time + FireRate;
+                hasFired = true;
+                FireBullet();
+            }
+        }
+        else
+        {
+            hasFired = false;
+        }
+
+        SimmulateBullets(Time.deltaTime);
+        DestroyBullets();
+    }
+
+    #region Animation Events
 
     /// <summary>
     /// All Animation events for Weapon come through here
@@ -178,128 +293,9 @@ public class WeaponItem : Item
         ClipData.Magazine.SetActive(false);
     }
 
+    #endregion
 
-    public void OnPullTrigger()
-    {
-       IsPullingTrigger = true;
-    }
-
-
-    /// <summary>
-    /// Can the weapon currently fire a bullet
-    /// </summary>
-    /// <returns>Returns true if a bullet can be fired</returns>
-    private bool CanFire()
-    {
-        return Time.time > accumulatedTime;
-    }
-
-    /**
-     * If our clip is empty we need to reload clip
-     */
-    private bool RequiresReload() {
-       return (ClipData.BulletsLeft == 0) ? true : false;
-    }
-
-    /**
-     * Does the player need to let go over the trigger to fire next round
-     */
-    private bool RequiresReset()
-    {
-        bool resetHammer = false;
-
-        if (hasFired)
-        {
-            switch (CurrentWeaponType)
-            {
-                case WeaponType.SingleFire:
-                    resetHammer = true;
-                    break;
-                case WeaponType.Semi_Automatic:
-                    resetHammer = (ClipData.BurstCount >= ClipData.BurstRate) ? true : false;
-                    break;
-                case WeaponType.Automatic:
-                    resetHammer = false;
-                    break;
-            }
-        }
-
-        return resetHammer;
-    }
-
-    private void FireBullet()
-    {
-        ClipData.BurstCount++;
-        ClipData.BulletsLeft--;
-
-        MuzzelFlash.Emit(1);
-
-        // Play the shooting sound effect
-        if(GunAudio != null)
-            GunAudio.Play();
-
-        Vector3 direction = (RayCastDestination.position - RayCastOrigin.position).normalized;
-
-        var bullet = CreateBullet(RayCastOrigin.position, direction);
-        BulletsFire.Add(bullet);
-
-        WeaponRecoil.GenerateRecoil(WeaponName);
-    }
-
-    public void OnReleaseTrigger()
-    {
-        IsPullingTrigger = false;
-        ClipData.BurstCount = 0 ;
-    }
-
-    public void OnReload()
-    {
-       ClipData.BurstCount = 0;
-       ClipData.BulletsLeft = ClipData.ClipSize;
-       IsReloading = false;
-    }
-
-    private void LateUpdate()
-    {
-        if (IsPullingTrigger && !isHolstered)
-        {
-            // Update the time when our player can fire next
-            if (CanFire() && !RequiresReload() && !RequiresReset() && !IsReloading)
-            {
-                accumulatedTime = Time.time + FireRate;
-                hasFired = true;
-                FireBullet();
-            }
-        }
-        else
-        {
-            hasFired = false;
-        }
-
-        SimmulateBullets(Time.deltaTime);
-        DestroyBullets();
-    }
-
-   /* public void UpdateWeapon(float delta)
-    {
-        if (IsPullingTrigger)
-        {
-            // Update the time when our player can fire next
-            if (CanFire() && !RequiresReload() && !RequiresReset())
-            {
-                accumulatedTime = Time.time + FireRate;
-                hasFired = true;
-                FireBullet();
-            }
-        }
-        else
-        {
-            hasFired = false;
-        }
-
-        SimmulateBullets(delta);
-        DestroyBullets();
-    }*/
+    #region Bullet Recasting
     private void DestroyBullets()
     {
         BulletsFire.ForEach(bullet =>
@@ -374,6 +370,28 @@ public class WeaponItem : Item
        // bullet.Tracer.AddPosition(position);
         return bullet;
     }
+    #endregion
+
+    /* public void UpdateWeapon(float delta)
+ {
+     if (IsPullingTrigger)
+     {
+         // Update the time when our player can fire next
+         if (CanFire() && !RequiresReload() && !RequiresReset())
+         {
+             accumulatedTime = Time.time + FireRate;
+             hasFired = true;
+             FireBullet();
+         }
+     }
+     else
+     {
+         hasFired = false;
+     }
+
+     SimmulateBullets(delta);
+     DestroyBullets();
+ }*/
 
 }
 

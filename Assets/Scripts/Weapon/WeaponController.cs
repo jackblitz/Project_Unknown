@@ -3,7 +3,45 @@ using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using UnityEditor.Animations;
 using System.Collections;
+using UnityEngine.Events;
 
+public class WeaponControllerEvent : UnityEvent<string, int, WeaponItem>
+{
+    public const string WEAPON_CHANGE = "WEAPON_CHANGE";
+    public const string WEAPON_UPDATE = "WEAPON_ITEM_UPDATE";
+    public enum WeaponEvent
+    {
+        Added = 0,
+        Removed = 1
+    }
+
+    public enum WeaponItemEvents
+    {
+        Bullet_Count = 0,
+        Reload = 1
+    }
+
+    public void OnWeaponAdded(WeaponItem weaponModel)
+    {
+        Invoke(WEAPON_CHANGE, (int)WeaponEvent.Added, weaponModel);
+    }
+
+    public void OnWeaponRemoved(WeaponItem weaponModel)
+    {
+        Invoke(WEAPON_CHANGE, (int)WeaponEvent.Removed, weaponModel);
+    }
+
+    public void OnBulletCountChanged(WeaponItem weaponModel)
+    {
+        Invoke(WEAPON_UPDATE, (int)WeaponItemEvents.Bullet_Count, weaponModel);
+    }
+
+    public void OnWeaponReloaded(WeaponItem weaponModel)
+    {
+        Invoke(WEAPON_UPDATE, (int)WeaponItemEvents.Reload, weaponModel);
+    }
+
+}
 public class WeaponController : MonoBehaviour
 {
     public enum WeaponSlot
@@ -24,6 +62,9 @@ public class WeaponController : MonoBehaviour
     public Animator RigController;
 
     public Transform WeaponTarget;
+
+    public WeaponControllerEvent ControllerEvents = new WeaponControllerEvent();
+
     private void Start()
     {
         WeaponItem hasWeapon = GetComponentInChildren<WeaponItem>();
@@ -61,6 +102,7 @@ public class WeaponController : MonoBehaviour
         }*/
     }
 
+    #region Active Weapons TriggerFire calls
     public void OnPullTrigger()
     {
         WeaponItem activeWeapon = getActiveWeapon();
@@ -79,6 +121,7 @@ public class WeaponController : MonoBehaviour
         }
     }
 
+#endregion
     public void OnReload()
     {
         //Animation in rig controller will notify the weapon of its reload state 
@@ -93,6 +136,10 @@ public class WeaponController : MonoBehaviour
         }
     }
 
+    #region Weapon Switching
+    /// <summary>
+    /// Switches to the next weapon
+    /// </summary>
     public void OnNextWeapon()
     {
         switch (mActiveWeaponIndex)
@@ -106,6 +153,9 @@ public class WeaponController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Switches to the previous weapon
+    /// </summary>
     public void OnPreviousWeapon()
     {
         switch (mActiveWeaponIndex)
@@ -119,6 +169,12 @@ public class WeaponController : MonoBehaviour
         }
     }
 
+    #endregion
+
+    /// <summary>
+    /// Called when the character has equiped a weapon
+    /// </summary>
+    /// <param name="weaponItem">Weapon Equiped</param>
     public void OnEquipWeapon(WeaponItem weaponItem)
     {
         int weaponSlotIndex = (int)weaponItem.WeaponSlot;
@@ -141,6 +197,8 @@ public class WeaponController : MonoBehaviour
         EquippedWeapons[weaponSlotIndex] = weapon;
 
         SetActiveWeapon(weaponItem.WeaponSlot);
+
+        ControllerEvents.OnWeaponAdded(weaponItem);
     }
 
     public void HolsterActiveWeapon()

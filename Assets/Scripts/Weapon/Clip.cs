@@ -28,5 +28,17 @@ public class Clip
     /// Reference to Guns Magazine model
     /// </summary>
     public GameObject Magazine;
+
+    public void OnShotFired()
+    {
+        BurstCount++;
+        BulletsLeft--;
+    }
+
+    public void OnReloadClip()
+    {
+        BurstCount = 0;
+        BulletsLeft = ClipSize;
+    }
 }
 
