@@ -22,6 +22,13 @@ public class CrossHairTarget : MonoBehaviour
 
         Physics.Raycast(ray, out hitInfo);
 
-        transform.position = hitInfo.point;
+        if (hitInfo.point != Vector3.zero)
+        {
+            transform.position = hitInfo.point;
+        }
+        else
+        {
+            transform.position = Direction.transform.position;
+        }
     }
 }

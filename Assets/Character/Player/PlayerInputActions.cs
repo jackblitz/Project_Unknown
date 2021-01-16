@@ -113,6 +113,14 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""1f0307c2-5e12-4d3f-8845-3c2b197ac8c4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -229,7 +237,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""640ad8ca-33fe-4367-b537-d507d0ce8881"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
                     ""interactions"": ""Press(behavior=2)"",
                     ""processors"": """",
                     ""groups"": ""GamePad"",
@@ -379,6 +387,28 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""action"": ""HolsterWeapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""22ea89ea-4347-4b64-81e6-47cc1993bb90"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""GamePad"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""199dd2c2-7efd-4d10-a9f7-b80305f3dbc6"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -448,6 +478,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         m_PlayerControls_WeaponWheelRight = m_PlayerControls.FindAction("WeaponWheelRight", throwIfNotFound: true);
         m_PlayerControls_WeaponWheelLeft = m_PlayerControls.FindAction("WeaponWheelLeft", throwIfNotFound: true);
         m_PlayerControls_HolsterWeapon = m_PlayerControls.FindAction("HolsterWeapon", throwIfNotFound: true);
+        m_PlayerControls_Jump = m_PlayerControls.FindAction("Jump", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_ContextStart = m_Menu.FindAction("Context Start", throwIfNotFound: true);
@@ -512,6 +543,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerControls_WeaponWheelRight;
     private readonly InputAction m_PlayerControls_WeaponWheelLeft;
     private readonly InputAction m_PlayerControls_HolsterWeapon;
+    private readonly InputAction m_PlayerControls_Jump;
     public struct PlayerControlsActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -528,6 +560,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         public InputAction @WeaponWheelRight => m_Wrapper.m_PlayerControls_WeaponWheelRight;
         public InputAction @WeaponWheelLeft => m_Wrapper.m_PlayerControls_WeaponWheelLeft;
         public InputAction @HolsterWeapon => m_Wrapper.m_PlayerControls_HolsterWeapon;
+        public InputAction @Jump => m_Wrapper.m_PlayerControls_Jump;
         public InputActionMap Get() { return m_Wrapper.m_PlayerControls; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -573,6 +606,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @HolsterWeapon.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnHolsterWeapon;
                 @HolsterWeapon.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnHolsterWeapon;
                 @HolsterWeapon.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnHolsterWeapon;
+                @Jump.started -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_PlayerControlsActionsCallbackInterface.OnJump;
             }
             m_Wrapper.m_PlayerControlsActionsCallbackInterface = instance;
             if (instance != null)
@@ -613,6 +649,9 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                 @HolsterWeapon.started += instance.OnHolsterWeapon;
                 @HolsterWeapon.performed += instance.OnHolsterWeapon;
                 @HolsterWeapon.canceled += instance.OnHolsterWeapon;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
             }
         }
     }
@@ -682,6 +721,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
         void OnWeaponWheelRight(InputAction.CallbackContext context);
         void OnWeaponWheelLeft(InputAction.CallbackContext context);
         void OnHolsterWeapon(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

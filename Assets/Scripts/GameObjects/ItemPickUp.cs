@@ -9,7 +9,7 @@ public class ItemPickUp : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        CharacterController character = other.gameObject.GetComponent<CharacterController>();
+        CharacterLocomotion character = other.gameObject.GetComponent<CharacterLocomotion>();
 
         if(character != null)
         {
@@ -19,7 +19,7 @@ public class ItemPickUp : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        CharacterController character = other.gameObject.GetComponent<CharacterController>();
+        CharacterLocomotion character = other.gameObject.GetComponent<CharacterLocomotion>();
 
         if (character != null)
         {

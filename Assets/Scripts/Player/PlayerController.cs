@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(CharacterLocomotion))]
 public class PlayerController : MonoBehaviour
 {
     public GameplayCameraController mGameplayCameraController;
@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     public CharacterAimMotor AimMotor;
     public CharacterMotor MovementMotor;
 
-    private CharacterController mCharacterController;
+    private CharacterLocomotion mCharacterController;
     // Start is called before the first frame update
 
     PlayerInputActions mInput;
@@ -83,6 +83,8 @@ public class PlayerController : MonoBehaviour
         mInput.PlayerControls.WeaponWheelRight.performed += ctx => OnRightWeaponWheel(ctx.ReadValueAsButton());
         mInput.PlayerControls.WeaponWheelLeft.performed += ctx => OnLeftWeaponWheel(ctx.ReadValueAsButton());
         mInput.PlayerControls.HolsterWeapon.performed += ctx => OnHolsterWeapon(ctx.ReadValueAsButton());
+
+        mInput.PlayerControls.Jump.performed += ctx => mCharacterController.OnJump();
     }
 
     private void OnInteract(bool value)
@@ -121,7 +123,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        mCharacterController = GetComponent<CharacterController>();
+        mCharacterController = GetComponent<CharacterLocomotion>();
     }
 
     // Update is called once per frame
@@ -154,11 +156,11 @@ public class PlayerController : MonoBehaviour
     {
         if (IsAiming)
         {
-            mCharacterController.setAimState(CharacterController.AimState.Aim);
+            mCharacterController.setAimState(CharacterLocomotion.AimState.Aim);
         }
         else
         {
-            mCharacterController.setAimState(CharacterController.AimState.Hip);
+            mCharacterController.setAimState(CharacterLocomotion.AimState.Hip);
         }
     }
 
@@ -245,7 +247,7 @@ public class PlayerController : MonoBehaviour
 
                 if (cover != null)
                 {
-                    if (mCharacterController.GetPlayerState == CharacterController.PlayerState.Exploration)
+                    if (mCharacterController.GetPlayerState == CharacterLocomotion.PlayerState.Exploration)
                     {
                         mCharacterController.onAttachedCover();
 

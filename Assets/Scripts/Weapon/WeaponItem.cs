@@ -352,6 +352,13 @@ public class WeaponItem : Item
                 // hitInfo.rigidbody.AddForce(-hitInfo.normal * HitForce);
                 rigidBody.AddForceAtPosition(ray.direction * 20, hitInfo.point, ForceMode.Impulse);
             }
+
+
+            var hitBox = hitInfo.collider.GetComponent<Hitbox>();
+            if (hitBox != null)
+            {
+                hitBox.OnRaycastHit(this, ray.direction);
+            }
         }
         else
         {
