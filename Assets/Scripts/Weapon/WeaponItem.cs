@@ -206,7 +206,7 @@ public class WeaponItem : Item
         }
 
         SimmulateBullets(Time.deltaTime);
-        DestroyBullets();
+       // DestroyBullets();
     }
 
     #region Animation Events
@@ -362,7 +362,8 @@ public class WeaponItem : Item
         }
         else
         {
-            bullet.Tracer.transform.position = end;
+            if(bullet.Time < bullet.MaxLifeTime)
+                bullet.Tracer.transform.position = end;
         }
     }
 
