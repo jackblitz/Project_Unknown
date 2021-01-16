@@ -9,6 +9,8 @@ public class CharacterAimMotor : MonoBehaviour
     private Vector3 Direction;
     private float mLastAngle;
 
+    public GameObject LockedTarget;
+
     public Vector3 Position
     {
         get;
@@ -23,24 +25,31 @@ public class CharacterAimMotor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // float Angle = CalculateRotationDestination();
-        float currentAngle = Vector3.SignedAngle(transform.forward, Position, Vector3.up);
-        float facingAngle = Vector3.SignedAngle(transform.forward, Direction, Vector3.up);   //Vector3.Angle(transform.forward, Direction);
-        float clampedAngle = Mathf.Clamp(facingAngle, -160, 160);
-
-        float Angle = clampedAngle;
-      /*  //If we are flip minus counter clock wise to positive 
-        if (clampedAngle < 0)
+        float speed = Speed;
+        if (LockedTarget != null)
         {
-            Angle = (360 - clampedAngle) * -1;
-        }*/
+            Direction = (LockedTarget.transform.position - transform.position).normalized;
+        }
+    
+            // float Angle = CalculateRotationDestination();
+            float currentAngle = Vector3.SignedAngle(transform.forward, Position, Vector3.up);
+            float facingAngle = Vector3.SignedAngle(transform.forward, Direction, Vector3.up);   //Vector3.Angle(transform.forward, Direction);
+            float clampedAngle = Mathf.Clamp(facingAngle, -160, 160);
+
+            float Angle = clampedAngle;
+            /*  //If we are flip minus counter clock wise to positive 
+              if (clampedAngle < 0)
+              {
+                  Angle = (360 - clampedAngle) * -1;
+              }*/
 
 
-        //TODO Smooth move from current angle to next
-        Angle = Mathf.Lerp(currentAngle, Angle, Speed * Time.deltaTime);
+            //TODO Smooth move from current angle to next
+            Angle = Mathf.Lerp(currentAngle, Angle, speed * Time.deltaTime);
 
-        Quaternion rotationAngle = Quaternion.Euler(transform.rotation.eulerAngles.x, Angle, transform.rotation.eulerAngles.z);
-        Position = RotationUtils.RotatePointAroundPivot(transform.forward, Vector3.zero, rotationAngle.eulerAngles);
+            Quaternion rotationAngle = Quaternion.Euler(transform.rotation.eulerAngles.x, Angle, transform.rotation.eulerAngles.z);
+            Position = RotationUtils.RotatePointAroundPivot(transform.forward, Vector3.zero, rotationAngle.eulerAngles);
+       
     }
 
     private float CalculateRotationDestination()

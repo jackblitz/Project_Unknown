@@ -5,6 +5,7 @@ using UnityEngine;
 
 
 [RequireComponent(typeof(CharacterLocomotion))]
+[RequireComponent(typeof(AutoAim))]
 public class PlayerController : MonoBehaviour
 {
     public GameplayCameraController mGameplayCameraController;
@@ -17,6 +18,8 @@ public class PlayerController : MonoBehaviour
     public CharacterMotor MovementMotor;
 
     private CharacterLocomotion mCharacterController;
+    private AutoAim mAutoAim;
+
     // Start is called before the first frame update
 
     PlayerInputActions mInput;
@@ -124,6 +127,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         mCharacterController = GetComponent<CharacterLocomotion>();
+        mAutoAim = GetComponent<AutoAim>();
     }
 
     // Update is called once per frame
@@ -132,8 +136,18 @@ public class PlayerController : MonoBehaviour
         OnUpdateMoveDirection();
         OnUpdateLookDirection();
         OnUpdateSpeed();
-
         OnUpdateAimState();
+        OnUpdateAutoAim();
+    }
+
+    private void OnUpdateAutoAim()
+    {
+        if(mAutoAim.IsAiming)
+            AimMotor.LockedTarget = mAutoAim.getActiveTarget();
+        else
+        {
+            AimMotor.LockedTarget = null;
+        }
     }
 
     void LateUpdate()
@@ -151,6 +165,7 @@ public class PlayerController : MonoBehaviour
     private void onSetAimState(bool isAiming)
     {
         IsAiming = isAiming;
+        mAutoAim.OnSetAiming(isAiming);
     }
     private void OnUpdateAimState()
     {

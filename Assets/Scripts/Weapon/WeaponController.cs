@@ -1,7 +1,6 @@
 ﻿using Unity;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
-using UnityEditor.Animations;
 using System.Collections;
 using UnityEngine.Events;
 
