@@ -9,7 +9,7 @@ public class CharacterAimMotor : MonoBehaviour
     private Vector3 Direction;
     private float mLastAngle;
 
-    public GameObject LockedTarget;
+    public GameObject FocusObject;
 
     public Vector3 Position
     {
@@ -22,34 +22,49 @@ public class CharacterAimMotor : MonoBehaviour
     {
     }
 
+    public void setFocusPoint(GameObject gameObject)
+    {
+        FocusObject = gameObject;
+    }
+
     // Update is called once per frame
     void Update()
     {
         float speed = Speed;
-        if (LockedTarget != null)
+
+        if (FocusObject != null)
         {
-            Direction = (LockedTarget.transform.position - transform.position).normalized;
+            Vector3 focusedPosition = (FocusObject.transform.position - transform.position).normalized;
+            Direction = new Vector3(focusedPosition.x, 0, focusedPosition.z);
+            // float focusAngle = Vector3.Angle(transform.forward, position);
+            //Position = new Vector3(position.x, 1.1f, Position.z);
+            //facingAngle = Vector3.SignedAngle(transform.position, FocusObject.transform.position, Vector3.up);
+
         }
-    
-            // float Angle = CalculateRotationDestination();
-            float currentAngle = Vector3.SignedAngle(transform.forward, Position, Vector3.up);
-            float facingAngle = Vector3.SignedAngle(transform.forward, Direction, Vector3.up);   //Vector3.Angle(transform.forward, Direction);
-            float clampedAngle = Mathf.Clamp(facingAngle, -160, 160);
+        // float Angle = CalculateRotationDestination();
+        float currentAngle = Vector3.SignedAngle(transform.forward, Position, Vector3.up);
+        float facingAngle = Vector3.SignedAngle(transform.forward, Direction, Vector3.up);   //Vector3.Angle(transform.forward, Direction);
 
-            float Angle = clampedAngle;
-            /*  //If we are flip minus counter clock wise to positive 
-              if (clampedAngle < 0)
-              {
-                  Angle = (360 - clampedAngle) * -1;
-              }*/
+        float clampedAngle = Mathf.Clamp(facingAngle, -170, 170);
+
+        float Angle = clampedAngle;
+        /*  //If we are flip minus counter clock wise to positive 
+          if (clampedAngle < 0)
+          {
+              Angle = (360 - clampedAngle) * -1;
+          }*/
 
 
-            //TODO Smooth move from current angle to next
-            Angle = Mathf.Lerp(currentAngle, Angle, speed * Time.deltaTime);
+        //TODO Smooth move from current angle to next
+        Angle = Mathf.Lerp(currentAngle, Angle, speed * Time.deltaTime);
 
-            Quaternion rotationAngle = Quaternion.Euler(transform.rotation.eulerAngles.x, Angle, transform.rotation.eulerAngles.z);
-            Position = RotationUtils.RotatePointAroundPivot(transform.forward, Vector3.zero, rotationAngle.eulerAngles);
-       
+        Quaternion rotationAngle = Quaternion.Euler(transform.rotation.eulerAngles.x, Angle, transform.rotation.eulerAngles.z);
+        Position = RotationUtils.RotatePointAroundPivot(transform.forward, Vector3.zero, rotationAngle.eulerAngles);
+
+
+
+        Debug.Log(Position);
+
     }
 
     private float CalculateRotationDestination()

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using static FieldOfView;
 
 [RequireComponent(typeof(CharacterLocomotion))]
 [RequireComponent(typeof(AutoAim))]
@@ -142,12 +142,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnUpdateAutoAim()
     {
-        if(mAutoAim.IsAiming)
-            AimMotor.LockedTarget = mAutoAim.getActiveTarget();
+        VisibleObject AimPostion = mAutoAim.OnCalculateActiveTarget();
+
+        if (AimPostion != null)
+            AimMotor.setFocusPoint(AimPostion.Object);
         else
-        {
-            AimMotor.LockedTarget = null;
-        }
+            AimMotor.setFocusPoint(null);
     }
 
     void LateUpdate()
@@ -200,6 +200,7 @@ public class PlayerController : MonoBehaviour
         var moveLookDirection = (mCameraLookRight * rawLookDirection.x + mCameraLookForward * rawLookDirection.z).normalized;
         moveLookDirection.y = 0;
 
+        // AimMotor.setDirection(mAutoAim.getActiveTargetDirection());
         if (moveLookDirection.magnitude > 0.1f)
             AimMotor.setDirection(moveLookDirection);
         else

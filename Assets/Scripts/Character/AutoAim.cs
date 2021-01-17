@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static FieldOfView;
 
 public class AutoAim : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class AutoAim : MonoBehaviour
     public bool IsAiming = false;
 
     private List<FieldOfView.VisibleObject> mOrderedVisibleObjects = new List<FieldOfView.VisibleObject>();
-    private GameObject mActiveTarget;
+    private VisibleObject mActiveTarget;
 
 
     // Start is called before the first frame update
@@ -47,10 +48,10 @@ public class AutoAim : MonoBehaviour
         }
     }
 
-    public GameObject OnCalculateActiveTarget()
+    public VisibleObject OnCalculateActiveTarget()
     {
         if (mFOV.VisibleObjects.Count > 0 && IsAiming)
-            return mFOV.VisibleObjects[0].Object;
+            return mFOV.VisibleObjects[0];
 
         return null;
     }
@@ -59,8 +60,11 @@ public class AutoAim : MonoBehaviour
     /// Returns the current target locked on to
     /// </summary>
     /// <returns></returns>
-    public GameObject getActiveTarget()
+    public Vector3 getActiveTargetDirection()
     {
-        return mActiveTarget;
+        if(mActiveTarget != null)
+            return mActiveTarget.Direction;
+
+        return Vector3.zero;
     }
 }

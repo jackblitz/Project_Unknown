@@ -600,6 +600,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Icon_SelectionRing_09
       objectReference: {fileID: 0}
+    - target: {fileID: 1043703970769342, guid: cce517d27209e4b4c8257a723be1e9da, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4869399019193752, guid: cce517d27209e4b4c8257a723be1e9da, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -2882,8 +2886,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ac2e3e3518b8b41a6678a473f36560, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Direction: {fileID: 8388860769819391269}
-  Position: {fileID: 8388860770877196150}
+  AimMotor: {fileID: 8388860771124220936}
+  ShotHeight: 1.5
 --- !u!4 &2647398359283086642
 Transform:
   m_ObjectHideFlags: 0
@@ -2910,7 +2914,7 @@ GameObject:
   - component: {fileID: 2647398359283086642}
   - component: {fileID: 2647398359283086641}
   m_Layer: 0
-  m_Name: CrossAim
+  m_Name: BulletHitLocation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3081,7 +3085,7 @@ Camera:
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 0.019607844}
-  m_projectionMatrixMode: 0
+  m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
   m_SensorSize: {x: 36, y: 24}
@@ -4830,7 +4834,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mAimMotor: {fileID: 8388860771124220936}
-  mOffset: {x: 0, y: 0, z: 0}
+  mHitLocation: {fileID: 2647398359283086641}
 --- !u!114 &8388860769833608996
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7886,7 +7890,7 @@ MonoBehaviour:
     m_SourceObjects:
       m_Length: 1
       m_Item0:
-        transform: {fileID: 8388860769819391269}
+        transform: {fileID: 2647398359283086642}
         weight: 1
       m_Item1:
         transform: {fileID: 0}

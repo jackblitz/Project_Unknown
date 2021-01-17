@@ -6,14 +6,16 @@ public class FieldOfView : MonoBehaviour
 {
     public class VisibleObject
     {
-        public VisibleObject(float distance, GameObject target)
+        public VisibleObject(float distance, GameObject target, Vector3 direction)
         {
             Distance = distance;
             Object = target;
+            Direction = direction;
         }
 
         public float Distance;
         public GameObject Object;
+        public Vector3 Direction;
     }
     public float ViewRadius;
 
@@ -60,7 +62,7 @@ public class FieldOfView : MonoBehaviour
                 //If there are no obstacles in the way, then we can see the target
                 if (!Physics.Raycast(transform.position, dirToTarget, distance, ObjectMask))
                 {
-                    VisibleObjects.Add(new VisibleObject(AimDistance, target.gameObject));
+                    VisibleObjects.Add(new VisibleObject(AimDistance, target.gameObject, dirToTarget));
 
                     VisibleObjects.Sort(new DistanceComparer());
                 }
