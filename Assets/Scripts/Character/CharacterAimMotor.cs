@@ -11,6 +11,8 @@ public class CharacterAimMotor : MonoBehaviour
 
     public GameObject FocusObject;
 
+    public bool ignoreTarget = false;
+
     public Vector3 Position
     {
         get;
@@ -32,38 +34,31 @@ public class CharacterAimMotor : MonoBehaviour
     {
         float speed = Speed;
 
-        if (FocusObject != null)
+        if (FocusObject != null && !ignoreTarget)
         {
             Vector3 focusedPosition = (FocusObject.transform.position - transform.position).normalized;
             Direction = new Vector3(focusedPosition.x, 0, focusedPosition.z);
-            // float focusAngle = Vector3.Angle(transform.forward, position);
-            //Position = new Vector3(position.x, 1.1f, Position.z);
-            //facingAngle = Vector3.SignedAngle(transform.position, FocusObject.transform.position, Vector3.up);
 
         }
-        // float Angle = CalculateRotationDestination();
+
         float currentAngle = Vector3.SignedAngle(transform.forward, Position, Vector3.up);
         float facingAngle = Vector3.SignedAngle(transform.forward, Direction, Vector3.up);   //Vector3.Angle(transform.forward, Direction);
 
-        float clampedAngle = Mathf.Clamp(facingAngle, -170, 170);
+        float clampedAngle = Mathf.Clamp(facingAngle, -145, 145);
 
         float Angle = clampedAngle;
-        /*  //If we are flip minus counter clock wise to positive 
-          if (clampedAngle < 0)
-          {
-              Angle = (360 - clampedAngle) * -1;
-          }*/
-
-
-        //TODO Smooth move from current angle to next
+ 
         Angle = Mathf.Lerp(currentAngle, Angle, speed * Time.deltaTime);
+
+        //Remove smooth move and snapp to target
+        if (FocusObject != null)
+        {
+            Angle = clampedAngle;
+        }
+        
 
         Quaternion rotationAngle = Quaternion.Euler(transform.rotation.eulerAngles.x, Angle, transform.rotation.eulerAngles.z);
         Position = RotationUtils.RotatePointAroundPivot(transform.forward, Vector3.zero, rotationAngle.eulerAngles);
-
-
-
-        Debug.Log(Position);
 
     }
 
@@ -74,9 +69,12 @@ public class CharacterAimMotor : MonoBehaviour
 
     public void setDirection(Vector3 direction)
     {
-        Direction = direction;
-
-       // Position = direction;
+        if(Mathf.Abs(Vector3.Distance(direction, Direction)) > 1.1f)
+        {
+            FocusObject = null;
+        }
+        //Loose focus to object if player moves direction
+        Direction = direction;       
     }
 
 

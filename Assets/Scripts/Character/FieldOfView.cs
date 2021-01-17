@@ -31,8 +31,9 @@ public class FieldOfView : MonoBehaviour
 
     public void Start()
     {
-        StartCoroutine("FindTargetsWithDelay", .2f);
+        //StartCoroutine("FindTargetsWithDelay", .1f);
     }
+
 
     IEnumerator FindTargetsWithDelay(float delay)
     {
@@ -41,6 +42,11 @@ public class FieldOfView : MonoBehaviour
             yield return new WaitForSeconds(delay);
             FindVisibleTargets();
         }
+    }
+
+    private void Update()
+    {
+        FindVisibleTargets();
     }
 
     public void FindVisibleTargets()

@@ -66,6 +66,8 @@ public class PlayerController : MonoBehaviour
 
     private bool IsFiring = false;
 
+    private bool GetNextTarget = true;
+
     private void Awake()
     {
         mInput = new PlayerInputActions();
@@ -137,7 +139,6 @@ public class PlayerController : MonoBehaviour
         OnUpdateLookDirection();
         OnUpdateSpeed();
         OnUpdateAimState();
-        OnUpdateAutoAim();
     }
 
     private void OnUpdateAutoAim()
@@ -145,9 +146,13 @@ public class PlayerController : MonoBehaviour
         VisibleObject AimPostion = mAutoAim.OnCalculateActiveTarget();
 
         if (AimPostion != null)
-            AimMotor.setFocusPoint(AimPostion.Object);
+        {
+             AimMotor.setFocusPoint(AimPostion.Object);
+        }
         else
+        {
             AimMotor.setFocusPoint(null);
+        }
     }
 
     void LateUpdate()
@@ -166,7 +171,19 @@ public class PlayerController : MonoBehaviour
     {
         IsAiming = isAiming;
         mAutoAim.OnSetAiming(isAiming);
+
+        if (!isAiming)
+        {
+            AimMotor.setFocusPoint(null);
+        }
+        else
+        {
+            OnUpdateAutoAim();
+        }
+
+       
     }
+
     private void OnUpdateAimState()
     {
         if (IsAiming)

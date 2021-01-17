@@ -6487,7 +6487,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ViewRadius: 20
-  ViewAngle: 136
+  ViewAngle: 45
   TargetMask:
     serializedVersion: 2
     m_Bits: 64
@@ -7663,7 +7663,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 8
-  LockedTarget: {fileID: 0}
+  FocusObject: {fileID: 0}
+  ignoreTarget: 0
 --- !u!114 &8388860771124220937
 MonoBehaviour:
   m_ObjectHideFlags: 0
