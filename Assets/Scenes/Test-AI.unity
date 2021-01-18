@@ -431,6 +431,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e025362a5346a474ba28d4f1c1eee293, type: 3}
+--- !u!1 &285942019
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 285942020}
+  m_Layer: 6
+  m_Name: Direction
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &285942020
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 285942019}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1619573256244020358}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &291187517
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3425,6 +3455,8 @@ GameObject:
   - component: {fileID: 1615959578390891094}
   - component: {fileID: 1615959578390891097}
   - component: {fileID: 1615959578390891096}
+  - component: {fileID: 1615959578390891098}
+  - component: {fileID: 1615959578390891099}
   m_Layer: 6
   m_Name: AiAgent
   m_TagString: Untagged
@@ -3444,9 +3476,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fda68a85b785ec4284e4dde2b0c2a52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {fileID: 8388860770877196150}
-  MaxTime: 1
-  MaxDistance: 1
 --- !u!195 &1615959578390891092
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3457,11 +3486,11 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 0
+  m_Speed: 3
   m_Acceleration: 40
   avoidancePriority: 50
-  m_AngularSpeed: 720
-  m_StoppingDistance: 3
+  m_AngularSpeed: 1000
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -3536,6 +3565,46 @@ MonoBehaviour:
   HitText: {fileID: 2067006896519407866, guid: 675acb77bb7a4904dbaadb88e2100666, type: 3}
   TargetTransform: {fileID: 1614266990511213304}
   Offset: {x: 0, y: 0.5, z: 0}
+--- !u!114 &1615959578390891098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1615959578390891090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db6f9f20bc6539f4686c3b19826b553f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  config: {fileID: 11400000, guid: a8c4b3a05a6ff87428fde1368083d0dc, type: 2}
+  InitState: 2
+  NavMeshAgent: {fileID: 0}
+  Ragdoll: {fileID: 0}
+  UI: {fileID: 0}
+  FOV: {fileID: 0}
+  TargetTransform: {fileID: 0}
+--- !u!114 &1615959578390891099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1615959578390891090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80ad6855af8a0e14d8711f1cf806c676, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ViewRadius: 0
+  ViewAngle: 0
+  TargetMask:
+    serializedVersion: 2
+    m_Bits: 0
+  ObjectMask:
+    serializedVersion: 2
+    m_Bits: 128
+  Direction: {fileID: 285942020}
 --- !u!1 &1615960886915050196
 GameObject:
   m_ObjectHideFlags: 0
@@ -4765,6 +4834,7 @@ Transform:
   - {fileID: 969966280}
   - {fileID: 1619569726059840366}
   - {fileID: 1619048160113103004}
+  - {fileID: 285942020}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5158,7 +5228,7 @@ Camera:
   serializedVersion: 2
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 0.019607844}
-  m_projectionMatrixMode: 1
+  m_projectionMatrixMode: 0
   m_GateFitMode: 2
   m_FOVAxisMode: 0
   m_SensorSize: {x: 36, y: 24}
@@ -8522,7 +8592,7 @@ GameObject:
   - component: {fileID: 8388860770877692565}
   - component: {fileID: 8388860770877692567}
   - component: {fileID: 8388860770877692568}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MaleDummy
   m_TagString: Player
   m_Icon: {fileID: 0}

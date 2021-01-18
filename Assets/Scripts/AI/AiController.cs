@@ -7,6 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(Ragdoll))]
 [RequireComponent(typeof(Health))]
 [RequireComponent(typeof(UIHit))]
+[RequireComponent(typeof(AIAgent))]
 public class AiController : MonoBehaviour
 {
     private AILocomotion mAILocomotion;
@@ -16,7 +17,10 @@ public class AiController : MonoBehaviour
     private UIHealthBar mHealthBar;
     private Hitbox[] mHitBoxs;
     private UIHit mUIHit;
-    private Rigidbody mLastHitBodyPart;
+    private BoxCollider mBoxCollider;
+
+    private AIAgent AIAgent;
+
     private Vector3 mLastHitLocation;
     private WeaponItem mWeaponHitWith;
     public float HitForce;
@@ -29,6 +33,8 @@ public class AiController : MonoBehaviour
         mRigidbody = GetComponentsInChildren<Rigidbody>();
         mHealthBar = GetComponentInChildren<UIHealthBar>();
         mUIHit = GetComponent<UIHit>();
+        mBoxCollider = GetComponent<BoxCollider>();
+        AIAgent = GetComponent<AIAgent>();
 
         foreach (var rigidBody in mRigidbody)
         {
@@ -62,14 +68,15 @@ public class AiController : MonoBehaviour
 
     private void OnDead()
     {
-        mRagdoll.OnActivateRagdoll();
-       // mLastHitLocation.z = 1;
-
         //Hits the body part with force
-        Vector3 force = mLastHitLocation * mWeaponHitWith.HitForce;
-        mLastHitBodyPart.AddForce(force, ForceMode.VelocityChange);
+        AIDeathState deathState = AIAgent.StateMachine.GetState(AIStateId.Death) as AIDeathState;
+        deathState.direction = mLastHitLocation;
+        deathState.KillBy = mWeaponHitWith;
 
-        mHealthBar.gameObject.SetActive(false);
+
+        AIAgent.StateMachine.OnChangeState(AIStateId.Death);
+        //Switch collider off so that auto aim stops
+        mBoxCollider.enabled = false;
     }
 
     private void OnUpdateHealthUI()
@@ -86,7 +93,8 @@ public class AiController : MonoBehaviour
     private void OnHitBoxEvent(WeaponItem weapon, Vector3 direction, Rigidbody hitBodyPart)
     {
         mHealth.OnTakeDemage(weapon.GunDamage);
-        mLastHitBodyPart = hitBodyPart;
+        mRagdoll.SetOnLastHitBody(hitBodyPart);
+      
         mLastHitLocation = direction;
         mWeaponHitWith = weapon;
     }

@@ -46,7 +46,7 @@ public class FieldOfView : MonoBehaviour
 
     private void Update()
     {
-        FindVisibleTargets();
+       // FindVisibleTargets();
     }
 
     public void FindVisibleTargets()

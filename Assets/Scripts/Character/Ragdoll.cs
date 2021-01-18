@@ -6,6 +6,8 @@ public class Ragdoll : MonoBehaviour
 {
     Rigidbody[] mRigidbodies;
     Animator mAnimator;
+    private Rigidbody mLastHitBodyPart;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,9 +43,13 @@ public class Ragdoll : MonoBehaviour
         mAnimator.enabled = false;
     }
 
+    public void SetOnLastHitBody(Rigidbody rigidbody)
+    {
+        mLastHitBodyPart = rigidbody;
+    }
+
     public void ApplyForce(Vector3 force)
     {
-        //var rigidBody = mAnimator.GetBoneTransform(HumanBodyBones.Hips).GetComponent<Rigidbody>();
-        //rigidBody.AddForce(force, ForceMode.VelocityChange);
+        mLastHitBodyPart.AddForce(force, ForceMode.VelocityChange);
     }
 }
