@@ -21,7 +21,7 @@ public class TargetPractice : MonoBehaviour
         
     }
 
-    private void OnHit(WeaponItem weapon, Vector3 direction)
+    private void OnHit(WeaponItem weapon, Vector3 direction, Rigidbody hitPart)
     {
         Instantiate(HitText, this.gameObject.transform, false);
     }

@@ -19230,8 +19230,8 @@ MonoBehaviour:
     InitialVelocity: {x: 0, y: 0, z: 0}
   CurrentWeaponType: 1
   FireRate: 0.15
-  GunDamage: 1
-  HitForce: 100
+  GunDamage: 25
+  HitForce: 20
   WeaponSlot: 0
   MuzzelFlash: {fileID: 2432804626563047659}
   HitEffect: {fileID: 485080502341308176}

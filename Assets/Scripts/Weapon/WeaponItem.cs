@@ -353,7 +353,6 @@ public class WeaponItem : Item
                 rigidBody.AddForceAtPosition(ray.direction * 20, hitInfo.point, ForceMode.Impulse);
             }
 
-
             var hitBox = hitInfo.collider.GetComponent<Hitbox>();
             if (hitBox != null)
             {
