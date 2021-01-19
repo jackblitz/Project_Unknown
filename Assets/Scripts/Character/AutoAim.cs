@@ -3,39 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using static FieldOfView;
 
-public class AutoAim : MonoBehaviour
+public class AutoAim : FieldOfView
 {
-    public float ViewRadius;
-
-    [Range(0, 360)]
-    public float ViewAngle;
-
-    public LayerMask TargetMask;
-    public LayerMask ObjectMask;
-    public Transform Direction;
-
-    private FieldOfView mFOV;
     public bool IsAiming = false;
 
-    private List<FieldOfView.VisibleObject> mOrderedVisibleObjects = new List<FieldOfView.VisibleObject>();
     private VisibleObject mActiveTarget;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        mFOV = this.gameObject.AddComponent<FieldOfView>() as FieldOfView;
-        mFOV.TargetMask = TargetMask;
-        mFOV.ObjectMask = ObjectMask;
-        mFOV.ViewAngle = ViewAngle;
-        mFOV.ViewRadius = ViewRadius;
-        mFOV.Direction = Direction;
-    }
 
     // Update is called once per frame
     void Update()
     {
-        mFOV.FindVisibleTargets();
+        FindVisibleTargets();
     }
 
     public void OnSetAiming(bool isAiming)
@@ -50,8 +27,8 @@ public class AutoAim : MonoBehaviour
 
     public VisibleObject OnCalculateActiveTarget()
     {
-        if (mFOV.VisibleObjects.Count > 0 && IsAiming)
-            return mFOV.VisibleObjects[0];
+        if (VisibleObjects.Count > 0 && IsAiming)
+            return VisibleObjects[0];
 
         return null;
     }
@@ -66,5 +43,9 @@ public class AutoAim : MonoBehaviour
             return mActiveTarget.Direction;
 
         return Vector3.zero;
+    }
+
+    public override void OnCompleteScan()
+    {
     }
 }

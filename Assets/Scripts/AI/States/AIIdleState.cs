@@ -5,6 +5,8 @@ using static FieldOfView;
 
 public class AIIdleState : AIState
 {
+    private VisibleObject mVisibleTarget;
+
     public AIStateId GetId()
     {
         return AIStateId.Idle;
@@ -16,16 +18,20 @@ public class AIIdleState : AIState
 
     public void Update(AIAgent agent)
     {
-        VisibleObject obj = agent.FOV.GetVisibleObject();
-
-        if (obj != null)
+        if (mVisibleTarget != null)
         {
-            agent.TargetTransform = obj.Object.transform;
-            agent.StateMachine.OnChangeState(AIStateId.ChasePlayer);
+            agent.TargetTransform = mVisibleTarget.Object.transform;
+            agent.StateMachine.OnChangeState(AIStateId.FollowTarget);
         }
     }
 
     public void Exit(AIAgent agent)
     {
+        mVisibleTarget = null;
+    }
+
+    public void OnFOVEvent(AIAgent agent, int state, VisibleObject visibleObject)
+    {
+        mVisibleTarget = visibleObject;
     }
 }

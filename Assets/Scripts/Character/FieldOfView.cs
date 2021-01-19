@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using static FieldOfView;
 
-public class FieldOfView : MonoBehaviour
+public abstract class FieldOfView : MonoBehaviour
 {
     public class VisibleObject
     {
@@ -29,9 +32,11 @@ public class FieldOfView : MonoBehaviour
 
     public Transform Direction;
 
+    public FieldOfViewEvent Event = new FieldOfViewEvent();
+
     public void Start()
     {
-        //StartCoroutine("FindTargetsWithDelay", .1f);
+        Debug.Log("Inhertited");
     }
 
 
@@ -69,12 +74,16 @@ public class FieldOfView : MonoBehaviour
                 if (!Physics.Raycast(transform.position, dirToTarget, distance, ObjectMask))
                 {
                     VisibleObjects.Add(new VisibleObject(AimDistance, target.gameObject, dirToTarget));
-
-                    VisibleObjects.Sort(new DistanceComparer());
                 }
             }
         }
+
+        VisibleObjects.Sort(new DistanceComparer());
+        OnCompleteScan();
+
     }
+
+    public abstract void OnCompleteScan();
 
     public Vector3 DirectionFromAngle(float angleInDegrees, bool angleIsGlobal)
     {
@@ -85,11 +94,34 @@ public class FieldOfView : MonoBehaviour
         return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
 
+
     public class DistanceComparer : IComparer<VisibleObject>
     {
         public int Compare(VisibleObject x, VisibleObject y)
         {
             return x.Distance.CompareTo(y.Distance);
         }
+    }
+}
+
+public class FieldOfViewEvent : UnityEvent<int, VisibleObject>
+{
+
+    public enum FieldOfViewEvents
+    {
+        FoundTarget = 0,
+        LostTarget = 1,
+        ChangedTarget = 2,
+        TargetRangeChanged = 3
+    }
+
+    public void OnFoundFirstTarget(VisibleObject visibleObject)
+    {
+        Invoke((int)FieldOfViewEvents.FoundTarget, visibleObject);
+    }
+
+    public void OnLostTarget(VisibleObject visibleObject)
+    {
+        Invoke((int)FieldOfViewEvents.LostTarget, visibleObject);
     }
 }

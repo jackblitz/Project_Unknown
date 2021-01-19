@@ -23,6 +23,6 @@ public class TargetPractice : MonoBehaviour
 
     private void OnHit(WeaponItem weapon, Vector3 direction, Rigidbody hitPart)
     {
-        Instantiate(HitText, this.gameObject.transform, false);
+        Instantiate(HitText, this.gameObject.transform.position, Quaternion.identity, this.gameObject.transform);
     }
 }

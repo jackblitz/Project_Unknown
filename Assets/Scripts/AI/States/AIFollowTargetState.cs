@@ -2,25 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static FieldOfView;
 
-public class AIChasePlayerState : AIState
+public class AIFollowTargetState : AIState
 {
     float timer = 0.0f;
 
-
     public void Enter(AIAgent agent)
     {
-        
+
     }
 
     public void Exit(AIAgent agent)
     {
        
+       
     }
 
     public AIStateId GetId()
     {
-        return AIStateId.ChasePlayer;
+        return AIStateId.FollowTarget;
     }
 
     public void Update(AIAgent agent)
@@ -49,6 +50,18 @@ public class AIChasePlayerState : AIState
                 }
             }
             timer = agent.config.MaxTime;
+        }
+    }
+
+    public void OnFOVEvent(AIAgent agent, int state, VisibleObject visibleObject)
+    {
+        switch (state)
+        {
+            case (int)FieldOfViewEvent.FieldOfViewEvents.LostTarget:
+                AISearchState searchState = agent.StateMachine.GetState(AIStateId.Search) as AISearchState;
+                searchState.LastKnownLocation = agent.TargetTransform.position;
+                agent.StateMachine.OnChangeState(AIStateId.Search);
+                break;
         }
     }
 }

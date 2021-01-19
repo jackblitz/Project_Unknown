@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxTime: 1
   MaxDistance: 1
-  ViewRadius: 8
-  ViewAngle: 60
+  ViewRadius: 12
+  ViewAngle: 130
   TargetMask:
     serializedVersion: 2
     m_Bits: 256

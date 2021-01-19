@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
     }
 
     /**
-     * Player Look at Direction
+     * Players Input Direction
      **/
     public Vector2 MoveToDirection
     {
@@ -229,7 +229,8 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 rawDirection = new Vector3(MoveToDirection.x, 0, MoveToDirection.y);
 
-       // float differenceX = Mathf.Abs(rawDirection.x - rawDirection.x);
+
+        // float differenceX = Mathf.Abs(rawDirection.x - rawDirection.x);
 
         //Only recalcuate forward direction if player moves direction
         if (Vector3.Distance(rawDirection, mLastRawDirection) > 0.2f)
@@ -243,11 +244,12 @@ public class PlayerController : MonoBehaviour
         var moveSmoothDirection = (mCameraRight * rawDirection.x + mCameraForward * rawDirection.z).normalized;
         moveSmoothDirection.y = 0;
 
+
         if (rawDirection.magnitude > 0.1f)
             MovementMotor.setDirection(moveSmoothDirection);
         else
             MovementMotor.setDirection(Vector3.zero);
-      
+
     }
 
     public void OnAttack(bool isFiring)

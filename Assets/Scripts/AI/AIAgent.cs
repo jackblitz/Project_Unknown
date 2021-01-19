@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static FieldOfView;
 
 public class AIAgent : MonoBehaviour
 {
     public AIStateMachine StateMachine;
     public AIAgentConfig config;
+    public WayPointHolder PatrolRoute;
 
     public AIStateId InitState;
 
@@ -26,10 +28,14 @@ public class AIAgent : MonoBehaviour
         FOV = GetComponent<AIFOV>();
 
         StateMachine = new AIStateMachine(this);
-        StateMachine.RegisterStates(new AIChasePlayerState());
+        StateMachine.RegisterStates(new AIFollowTargetState());
         StateMachine.RegisterStates(new AIDeathState());
         StateMachine.RegisterStates(new AIIdleState());
+        StateMachine.RegisterStates(new AIPatrolState());
+        StateMachine.RegisterStates(new AISearchState());
         StateMachine.OnChangeState(InitState);
+
+        FOV.Event.AddListener(OnFOVEvent);
 
         setFOVConfig();
     }
@@ -45,5 +51,10 @@ public class AIAgent : MonoBehaviour
     void Update()
     {
         StateMachine.Update();
+    }
+
+    private void OnFOVEvent(int state, VisibleObject visibleObject)
+    {
+        StateMachine.OnFOVEvent(state, visibleObject);
     }
 }

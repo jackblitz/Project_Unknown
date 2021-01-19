@@ -34,7 +34,7 @@ public class CharacterAimMotor : MonoBehaviour
     {
         float speed = Speed;
 
-        if (FocusObject != null && !ignoreTarget)
+        if (FocusObject != null)
         {
             Vector3 focusedPosition = (FocusObject.transform.position - transform.position).normalized;
             Direction = new Vector3(focusedPosition.x, 0, focusedPosition.z);
@@ -69,10 +69,10 @@ public class CharacterAimMotor : MonoBehaviour
 
     public void setDirection(Vector3 direction)
     {
-        if(Mathf.Abs(Vector3.Distance(direction, Direction)) > 1.1f)
+        /*if(Mathf.Abs(Vector3.Distance(direction, Direction)) > 1.1f)
         {
             FocusObject = null;
-        }
+        }*/
         //Loose focus to object if player moves direction
         Direction = direction;       
     }

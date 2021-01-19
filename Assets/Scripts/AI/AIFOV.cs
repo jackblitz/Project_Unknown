@@ -2,25 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using static FieldOfView;
 
-public class AIFOV : MonoBehaviour
+public class AIFOV : FieldOfView
 {
-    public float ViewRadius;
-
-    [Range(0, 360)]
-    public float ViewAngle;
-
-    public LayerMask TargetMask;
-    public LayerMask ObjectMask;
-
-    private FieldOfView mFOV;
-
-    public Transform Direction;
+    
     // Start is called before the first frame update
-    void Start()
+    private new void Start()
     {
-        mFOV = this.gameObject.AddComponent<FieldOfView>() as FieldOfView;
+        base.Start();
 
         StartCoroutine("FindTargetsWithDelay", .5f);
     }
@@ -33,27 +24,31 @@ public class AIFOV : MonoBehaviour
         }
     }
 
-    private void FindVisibleTargets()
+    public VisibleObject GetClostestTarget()
     {
-        mFOV.FindVisibleTargets();
-    }
-
-    public VisibleObject GetVisibleObject()
-    {
-        if (mFOV.VisibleObjects.Count > 0)
-            return mFOV.VisibleObjects[0];
+        if (VisibleObjects.Count > 0)
+            return VisibleObjects[0];
 
         return null;
     }
 
-    // Update is called once per frame
-    void Update()
+    private int LastRange = -1;
+
+    public override void OnCompleteScan()
     {
-        mFOV.TargetMask = TargetMask;
-        mFOV.ObjectMask = ObjectMask;
-        mFOV.ViewAngle = ViewAngle;
-        mFOV.ViewRadius = ViewRadius;
-        mFOV.Direction = Direction;
-        //mFOV.FindVisibleTargets();
+        if (LastRange != VisibleObjects.Count)
+        {
+            if (VisibleObjects.Count > 0)
+            {
+                Event.OnFoundFirstTarget(GetClostestTarget());
+            }
+            else
+            {
+                Event.OnLostTarget(null);
+            }
+        }
+
+        LastRange = VisibleObjects.Count;
     }
 }
+

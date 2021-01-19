@@ -206,7 +206,7 @@ public class WeaponItem : Item
         }
 
         SimmulateBullets(Time.deltaTime);
-       // DestroyBullets();
+        DestroyBullets();
     }
 
     #region Animation Events

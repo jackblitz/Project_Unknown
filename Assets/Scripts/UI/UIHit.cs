@@ -14,4 +14,5 @@ public class UIHit : MonoBehaviour
     {
         Instantiate(HitText, this.gameObject.transform, false);
     }
+
 }

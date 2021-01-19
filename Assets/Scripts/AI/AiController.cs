@@ -92,11 +92,16 @@ public class AiController : MonoBehaviour
 
     private void OnHitBoxEvent(WeaponItem weapon, Vector3 direction, Rigidbody hitBodyPart)
     {
+
         mHealth.OnTakeDemage(weapon.GunDamage);
         mRagdoll.SetOnLastHitBody(hitBodyPart);
       
         mLastHitLocation = direction;
         mWeaponHitWith = weapon;
+
+        AISearchState searchState = AIAgent.StateMachine.GetState(AIStateId.Search) as AISearchState;
+        searchState.LastKnownLocation = mWeaponHitWith.gameObject.transform.position;
+        AIAgent.StateMachine.OnChangeState(AIStateId.Search);
     }
 
     // Update is called once per frame

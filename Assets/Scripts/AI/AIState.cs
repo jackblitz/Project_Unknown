@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static FieldOfView;
 
 public enum AIStateId
 {
-    ChasePlayer,
+    FollowTarget,
+    Patrol,
     Death,
-    Idle
+    Idle,
+    Search
 }
 public interface AIState
 {
@@ -14,4 +17,6 @@ public interface AIState
     void Enter(AIAgent agent);
     void Update(AIAgent agent);
     void Exit(AIAgent agent);
+
+    void OnFOVEvent(AIAgent agent, int state, VisibleObject visibleObject);
 }

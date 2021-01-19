@@ -29,4 +29,9 @@ public class AIDeathState : AIState
     public void Exit(AIAgent agent)
     {
     }
+
+    public void OnFOVEvent(AIAgent agent, int state, FieldOfView.VisibleObject visibleObject)
+    {
+        throw new System.NotImplementedException();
+    }
 }

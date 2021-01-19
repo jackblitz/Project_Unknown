@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static FieldOfView;
 
 public class AIStateMachine
 {
@@ -38,5 +40,10 @@ public class AIStateMachine
         GetState(CurrentState)?.Exit(Agent);
         CurrentState = newState;
         GetState(CurrentState)?.Enter(Agent);
+    }
+
+    public void OnFOVEvent(int state, VisibleObject visibleObject)
+    {
+        GetState(CurrentState)?.OnFOVEvent(Agent, state, visibleObject);
     }
 }
