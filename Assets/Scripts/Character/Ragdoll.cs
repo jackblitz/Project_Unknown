@@ -8,13 +8,24 @@ public class Ragdoll : MonoBehaviour
     Animator mAnimator;
     private Rigidbody mLastHitBodyPart;
 
+    public int SolverInterations = 8;
+    public int SolverVelocityInterations = 8;
+    public float MaxAngularVelocity = 20f;
+
     // Start is called before the first frame update
     void Start()
     {
         mRigidbodies = GetComponentsInChildren<Rigidbody>();
         mAnimator = GetComponent<Animator>();
 
-        OnDeactivateRagdoll();
+        //OnDeactivateRagdoll();
+
+        foreach(Rigidbody rb in mRigidbodies)
+        {
+            rb.solverIterations = SolverInterations;
+            rb.solverVelocityIterations = SolverVelocityInterations;
+            rb.maxAngularVelocity = MaxAngularVelocity;
+        }
     }
 
     // Update is called once per frame
