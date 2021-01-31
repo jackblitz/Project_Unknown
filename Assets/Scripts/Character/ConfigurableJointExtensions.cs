@@ -1,28 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
-
-public class MotionCopy : MonoBehaviour
-{
-    public Transform targetLimb;
-
-    ConfigurableJoint ConfigurableJoint;
-    private Quaternion mInitialRotation;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        ConfigurableJoint = GetComponent<ConfigurableJoint>();
-		mInitialRotation = transform.localRotation;
-	}
-
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-		ConfigurableJointExtensions.SetTargetRotationLocal(ConfigurableJoint, targetLimb.localRotation, mInitialRotation);
-		// ConfigurableJoint.targetRotation = targetLimb.rotation;
-	}
-}
 
 public static class ConfigurableJointExtensions
 {
@@ -86,12 +63,12 @@ public static class ConfigurableJointExtensions
 	/// </summary>
 	public static void SetupAsCharacterJoint(this ConfigurableJoint joint)
 	{
-		joint.xMotion = ConfigurableJointMotion.Locked;
-		joint.yMotion = ConfigurableJointMotion.Locked;
-		joint.zMotion = ConfigurableJointMotion.Locked;
-		joint.angularXMotion = ConfigurableJointMotion.Limited;
-		joint.angularYMotion = ConfigurableJointMotion.Limited;
-		joint.angularZMotion = ConfigurableJointMotion.Limited;
+		//joint.xMotion = ConfigurableJointMotion.Locked;
+		//joint.yMotion = ConfigurableJointMotion.Locked;
+		//joint.zMotion = ConfigurableJointMotion.Locked;
+		//joint.angularXMotion = ConfigurableJointMotion.Limited;
+		//joint.angularYMotion = ConfigurableJointMotion.Limited;
+		//joint.angularZMotion = ConfigurableJointMotion.Limited;
 		joint.breakForce = Mathf.Infinity;
 		joint.breakTorque = Mathf.Infinity;
 

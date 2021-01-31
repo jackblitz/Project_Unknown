@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInputController : MonoBehaviour
+[RequireComponent(typeof(CharacterMotor))]
+[RequireComponent(typeof(CharacterAimMotor))]
+public class PlayerPhysicsInputController : CharacterPhysicsController
 {
     private PlayerInputActions mInput;
-    private Rigidbody mBody;
 
     private CharacterMotor mMotor;
+    private CharacterAimMotor mAimMotor;
     /**
     * Player Look at Direction
     **/
@@ -33,8 +35,8 @@ public class PlayerInputController : MonoBehaviour
         mInput.PlayerControls.Move.performed += ctx => MoveToDirection = ctx.ReadValue<Vector2>();
         mInput.PlayerControls.LookAt.performed += ctx => LookAtDirection = ctx.ReadValue<Vector2>();
 
-        mBody = GetComponent<Rigidbody>();
         mMotor = GetComponent<CharacterMotor>();
+        mAimMotor = GetComponent<CharacterAimMotor>();
     }
 
     // Update is called once per frame
@@ -50,16 +52,16 @@ public class PlayerInputController : MonoBehaviour
         var moveSmoothDirection = (Camera.main.transform.right * rawDirection.x + Camera.main.transform.forward * rawDirection.z).normalized;
         moveSmoothDirection.y = 0;
 
-       // if (rawDirection.magnitude > 0.1f)
+       if (rawDirection.magnitude > 0.1f)
            mMotor.setDirection(moveSmoothDirection);
-       // else
-       //     mMotor.setDirection(Vector3.zero);
+        else
+           mMotor.setDirection(Vector3.zero);
     }
 
     private void OnEnable()
     {
         if(mInput != null)
-        mInput.Enable();
+            mInput.Enable();
     }
 
     private void OnDisable()
