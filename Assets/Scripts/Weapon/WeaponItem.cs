@@ -350,7 +350,7 @@ public class WeaponItem : Item
             {
                 // Add force to the rigidbody we hit, in the direction from which it was hit
                 // hitInfo.rigidbody.AddForce(-hitInfo.normal * HitForce);
-                rigidBody.AddForceAtPosition(ray.direction * 20, hitInfo.point, ForceMode.Impulse);
+                rigidBody.AddForceAtPosition(ray.direction * 200, hitInfo.point, ForceMode.Impulse);
             }
 
             var hitBox = hitInfo.collider.GetComponent<Hitbox>();

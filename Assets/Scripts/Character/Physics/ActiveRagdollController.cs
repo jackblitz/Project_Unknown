@@ -8,11 +8,19 @@ public class ActiveRagdollController : MonoBehaviour
 
     public Rigidbody CharacterRigidbody;
 
+    public Rigidbody mHipRigidBody;
+
     public Animator StaticAnimator;
+
+    [Header("--- UPRIGHT TORQUE ---")]
+    public float uprightTorque = 5000;
+    [Tooltip("Defines how much torque percent is applied given the inclination angle percent [0, 1]")]
+    public AnimationCurve uprightTorqueFunction;
+    public float rotationTorque = 500;
 
     [Header("Hip settings")]
     [SerializeField] public RagdolLimbState HipState = new RagdolLimbState();
-    [SerializeField] public RagdollLimb[] Hip;
+    [SerializeField] public RagdollLimb Hip;
 
     [Header("Right Arm Settings")]
     [SerializeField] public RagdolLimbState RightArmLimbState = new RagdolLimbState();
@@ -38,10 +46,13 @@ public class ActiveRagdollController : MonoBehaviour
     [SerializeField] public RagdolLimbState LeftLegLimbState = new RagdolLimbState();
     [SerializeField] public RagdollLimb[] LeftLegLimbs;
 
+    public HumanBodyBones RemovehumanBodyBonesId;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
         fixedJoint = GetComponent<FixedJoint>();
+
 
         foreach (RagdollLimb ragdollLimb in RightArmLimbs)
         {
@@ -53,10 +64,7 @@ public class ActiveRagdollController : MonoBehaviour
             InitRagdoll(ragdollLimb);
         }
 
-        foreach (RagdollLimb ragdollLimb in Hip)
-        {
-            InitRagdoll(ragdollLimb);
-        }
+        InitRagdoll(Hip);
 
         foreach (RagdollLimb ragdollLimb in HeadLimbs)
         {
@@ -82,12 +90,32 @@ public class ActiveRagdollController : MonoBehaviour
 
     }
 
+    private void FixedUpdate()
+    {
+        //OnRagDollStateChanged();
+
+        OnRemoveLimb(RemovehumanBodyBonesId);
+
+        var balancePercent = Vector3.Angle(Hip.transform.up,
+                                     Vector3.up) / 180;
+        balancePercent = uprightTorqueFunction.Evaluate(balancePercent);
+        var rot = Quaternion.FromToRotation(mHipRigidBody.transform.up,
+                                             Vector3.forward).normalized;
+
+       // mHipRigidBody.AddTorque(new Vector3(rot.x, rot.y, rot.z)
+       //                                             * uprightTorque * balancePercent);
+
+        var directionAnglePercent = Vector3.SignedAngle(Hip.transform.forward,
+                            Vector3.forward, Vector3.up) / 180;
+      // mHipRigidBody.AddRelativeTorque(0, directionAnglePercent * rotationTorque, 0);
+    }
+
     private void OnRagDollStateChanged()
     { 
        foreach (RagdollLimb ragdollLimb in RightArmLimbs)
         {
            RightArmLimbState.UpdateState(ragdollLimb);
-            RightArmLimbState.UpdateWeight(ragdollLimb);
+           RightArmLimbState.UpdateWeight(ragdollLimb);
         }
 
         foreach (RagdollLimb ragdollLimb in LeftArmLimbs)
@@ -96,10 +124,9 @@ public class ActiveRagdollController : MonoBehaviour
             LeftArmLimbState.UpdateWeight(ragdollLimb);
         }
 
-        foreach (RagdollLimb ragdollLimb in Hip)
-        {
-            HipState.UpdateWeight(ragdollLimb);
-        }
+
+       HipState.UpdateWeight(Hip);
+        
 
         foreach (RagdollLimb ragdollLimb in HeadLimbs)
         {
@@ -115,14 +142,14 @@ public class ActiveRagdollController : MonoBehaviour
 
         foreach (RagdollLimb ragdollLimb in RightLefLimbs)
         {
-           // RightLegLimbState.UpdateState(ragdollLimb);
-           // RightLegLimbState.UpdateWeight(ragdollLimb);
+            RightLegLimbState.UpdateState(ragdollLimb);
+            //RightLegLimbState.UpdateWeight(ragdollLimb);
         }
 
         foreach (RagdollLimb ragdollLimb in LeftLegLimbs)
         {
             LeftLegLimbState.UpdateState(ragdollLimb);
-            LeftLegLimbState.UpdateWeight(ragdollLimb);
+           // LeftLegLimbState.UpdateWeight(ragdollLimb);
         }
     }
 
@@ -135,6 +162,82 @@ public class ActiveRagdollController : MonoBehaviour
     {
         fixedJoint.connectedBody = CharacterRigidbody;
     }
+
+    public void OnRemoveLimb(HumanBodyBones humanBodyBonesId)
+    {
+        Transform boneTransform = animator.GetBoneTransform(humanBodyBonesId);
+
+        if (boneTransform == null)
+            return;
+
+        ConfigurableJoint configurableJoint = boneTransform.GetComponent<ConfigurableJoint>();
+        CharacterJoint characterJoint = boneTransform.GetComponent<CharacterJoint>();
+
+        OnRemoveMotionControler(boneTransform);
+
+        //Remove all the motion controllers from limbs
+        for (int i = 0; i < boneTransform.childCount; i++){
+            Transform children = boneTransform.GetChild(i);
+            OnRemoveMotionControler(children);
+
+            //Allow childrend limbs to have weight into the ragdoll
+            CharacterJoint joint = children.GetComponent<CharacterJoint>();
+            if (joint != null)
+            {
+                joint.connectedMassScale = 1;
+            }
+
+            ConfigurableJoint configurableJoint1 = children.GetComponent<ConfigurableJoint>();
+            if (configurableJoint1 != null)
+            {
+                OnRemoveWeight(configurableJoint1);
+               // Destroy(configurableJoint1);
+            }
+        }
+
+        if (configurableJoint != null)
+        {
+           Destroy(configurableJoint);
+        }
+
+        if (characterJoint != null)
+        {
+            Destroy(characterJoint);
+        }
+
+        boneTransform.parent = null;
+    }
+
+    private void OnRemoveMotionControler(Transform transform)
+    {
+        RagdollMotion ragdollMotion = transform.GetComponent<RagdollMotion>();
+
+        if (ragdollMotion != null)
+        {
+            Destroy(ragdollMotion);
+        }
+    }
+
+    public void OnRemoveWeight(ConfigurableJoint joint)
+    {
+        if (joint == null)
+            return;
+
+        var xDrive = joint.angularXDrive;
+
+        xDrive.positionSpring = 0;
+        xDrive.positionDamper = 0;
+
+        var YXDrive = joint.angularYZDrive;
+
+        YXDrive.positionSpring = 0;
+        YXDrive.positionDamper = 0;
+
+        joint.angularXDrive = xDrive;
+        joint.angularYZDrive = YXDrive;
+
+    }
+
 
     /// <summary>
     /// Creates an instance of ragdoll limb based on humand bone id
@@ -153,6 +256,7 @@ public class ActiveRagdollController : MonoBehaviour
             limb.transform = boneTransform;
             limb.rigidbody = boneTransform.GetComponent<Rigidbody>();
             limb.configurableJoint = boneTransform.GetComponent<ConfigurableJoint>();
+            limb.characterJoint = boneTransform.GetComponent<CharacterJoint>();
             limb.RagdollMotion = boneTransform.GetComponent<RagdollMotion>();
 
             if (limb.RagdollMotion != null)
@@ -184,7 +288,7 @@ public class RagdollLimb
     public ConfigurableJoint configurableJoint;
     public Rigidbody ParentRigidbody;
     public RagdollMotion RagdollMotion;
-
+    public CharacterJoint characterJoint;
 }
 
 [Serializable]
@@ -221,11 +325,14 @@ public class RagdolLimbState
 
             ragdollLimb.transform.parent = null;
 
-
-            if (ragdollLimb.ParentRigidbody != null)
+            if (ragdollLimb.characterJoint != null)
             {
-                ragdollLimb.configurableJoint.connectedBody = null;
+                ragdollLimb.characterJoint.connectedBody = null;
+                ragdollLimb.characterJoint.connectedMassScale = 1;
             }
+
+         
+            ragdollLimb.RagdollMotion.enabled = false;
         }
         else
         {
@@ -234,12 +341,12 @@ public class RagdolLimbState
            // ragdollLimb.configurableJoint.zMotion = ConfigurableJointMotion;
 
 
-            if (ragdollLimb.ParentRigidbody != null)
+            /*if (ragdollLimb.ParentRigidbody != null)
             {
                 ragdollLimb.configurableJoint.connectedBody = ragdollLimb.ParentRigidbody;
 
                 ragdollLimb.transform.parent = ragdollLimb.ParentRigidbody.transform;
-            }  
+            }  */
         }
     }
 

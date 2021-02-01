@@ -17,7 +17,7 @@ public class RagdollMotion : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-       if (TargetBody != null)
+       if (TargetBody != null && configurableJoint != null)
        {
             ConfigurableJointExtensions.SetTargetRotationLocal(configurableJoint, TargetBody.transform.localRotation, InitalRotation);
        }
