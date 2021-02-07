@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     private CharacterLocomotion mCharacterController;
     private AutoAim mAutoAim;
 
+    public Camera camera1;
+
     // Start is called before the first frame update
 
     PlayerInputActions mInput;
@@ -200,7 +202,8 @@ public class PlayerController : MonoBehaviour
     {
         MovementMotor.isRunning = IsRunning;
     }
-
+    float speed;
+    float directionAngle;
     private void OnUpdateLookDirection()
     {
         ////Looking
@@ -209,7 +212,7 @@ public class PlayerController : MonoBehaviour
         //Only recalcuate forward direction if player moves direction
         if (Vector3.Distance(rawLookDirection, mLastLookDirection) > 0.2f)
         {
-            mCameraLookForward = Vector3.forward;//Camera.main.transform.forward;
+            mCameraLookForward = Camera.main.transform.forward;
             mCameraLookRight = Camera.main.transform.right;
             mLastLookDirection = rawLookDirection;
         }
@@ -217,11 +220,39 @@ public class PlayerController : MonoBehaviour
         var moveLookDirection = (mCameraLookRight * rawLookDirection.x + mCameraLookForward * rawLookDirection.z).normalized;
         moveLookDirection.y = 0;
 
+
         // AimMotor.setDirection(mAutoAim.getActiveTargetDirection());
-        if (moveLookDirection.magnitude > 0.1f)
+        if (rawLookDirection.magnitude > 0.1f)
             AimMotor.setDirection(moveLookDirection);
         else
             AimMotor.setDirection(transform.forward);
+
+    }
+
+
+    private void MovementtoWorldSpace(Transform root, Transform camera, Vector3 direction, ref float directionAngle, ref float speedOut, ref Vector3 DirectionOut)
+    {
+        Vector3 rootDirection = root.forward;
+
+        speedOut = direction.sqrMagnitude;
+
+        Vector3 cameraDirection = camera.forward;
+        cameraDirection.y = 0;
+
+        Quaternion referntialShift = Quaternion.FromToRotation(Vector3.forward, cameraDirection);
+
+        DirectionOut = referntialShift * direction;
+        Vector3 axisSign = Vector3.Cross(direction, DirectionOut);
+
+        Debug.DrawRay(new Vector3(root.position.x, root.position.y + 2f, root.position.z), DirectionOut, Color.green);
+        Debug.DrawRay(new Vector3(root.position.x, root.position.y + 2f, root.position.z), rootDirection, Color.magenta);
+        Debug.DrawRay(new Vector3(root.position.x, root.position.y + 2f, root.position.z), direction, Color.blue);
+
+        float angleRootToMOve = Vector3.Angle(rootDirection, DirectionOut) * (axisSign.y >= 0 ? -1f : 1f);
+
+        angleRootToMOve /= 180f;
+
+        directionAngle = angleRootToMOve * 3f;
 
     }
 
@@ -233,16 +264,20 @@ public class PlayerController : MonoBehaviour
         // float differenceX = Mathf.Abs(rawDirection.x - rawDirection.x);
 
         //Only recalcuate forward direction if player moves direction
-        if (Vector3.Distance(rawDirection, mLastRawDirection) > 0.2f)
-        {
-            mCameraForward = Vector3.forward;
-            mCameraRight = Camera.main.transform.right;
+          if (Vector3.Distance(rawDirection, mLastRawDirection) > 0.2f)
+          {
+             mCameraForward = Camera.main.transform.forward;
+             mCameraRight = Camera.main.transform.right;
 
             mLastRawDirection = rawDirection;
-        }
+          }
 
-        var moveSmoothDirection = (mCameraRight * rawDirection.x + mCameraForward * rawDirection.z).normalized;
-        moveSmoothDirection.y = 0;
+          var moveSmoothDirection = (mCameraRight * rawDirection.x + mCameraForward * rawDirection.z).normalized;
+          moveSmoothDirection.y = 0;
+
+        Vector3 directionOut = Vector3.zero;
+
+        // MovementtoWorldSpace(transform, camera1.transform, rawDirection, ref directionAngle, ref speed, ref directionOut);
 
 
         if (rawDirection.magnitude > 0.1f)
@@ -251,6 +286,7 @@ public class PlayerController : MonoBehaviour
             MovementMotor.setDirection(Vector3.zero);
 
     }
+
 
     public void OnAttack(bool isFiring)
     {
