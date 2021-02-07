@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(CharacterMotor))]
 [RequireComponent(typeof(CharacterAimMotor))]
-public class PlayerPhysicsInputController : CharacterPhysicsController
+public class PlayerPhysicsInputController : MonoBehaviour
 {
     private PlayerInputActions mInput;
 
@@ -60,7 +60,7 @@ public class PlayerPhysicsInputController : CharacterPhysicsController
         moveSmoothDirection.y = 0;
 
        if (rawDirection.magnitude > 0.1f)
-           mMotor.setDirection(moveSmoothDirection);
+          mMotor.setDirection(moveSmoothDirection);
         else
            mMotor.setDirection(Vector3.zero);
     }
