@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 
@@ -9,7 +8,7 @@ public class ItemPickUp : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        CharacterLocomotion character = other.gameObject.GetComponent<CharacterLocomotion>();
+        CharacterPhysicsController character = other.gameObject.GetComponent<CharacterPhysicsController>();
 
         if(character != null)
         {
@@ -19,7 +18,7 @@ public class ItemPickUp : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        CharacterLocomotion character = other.gameObject.GetComponent<CharacterLocomotion>();
+        CharacterPhysicsController character = other.gameObject.GetComponent<CharacterPhysicsController>();
 
         if (character != null)
         {

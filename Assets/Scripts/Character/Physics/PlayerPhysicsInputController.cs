@@ -10,7 +10,7 @@ public class PlayerPhysicsInputController : MonoBehaviour
 
     private CharacterMotor mMotor;
     private CharacterAimMotor mAimMotor;
-
+    private CharacterPhysicsController mCharacterController;
 
     float Direction;
     float Speed = 0f;
@@ -33,6 +33,7 @@ public class PlayerPhysicsInputController : MonoBehaviour
         set;
     }
 
+    private bool IsFiring = false;
 
     // Start is called before the first frame update
     void Awake()
@@ -42,14 +43,75 @@ public class PlayerPhysicsInputController : MonoBehaviour
         mInput.PlayerControls.Move.performed += ctx => InputMoveToDirection = ctx.ReadValue<Vector2>();
         mInput.PlayerControls.LookAt.performed += ctx => InputLookAtDirection = ctx.ReadValue<Vector2>();
 
+        mInput.PlayerControls.ContextAttack.performed += ctx => OnAttack(ctx.ReadValueAsButton());
+
+        mInput.PlayerControls.Interact.performed += ctx => OnInteract(ctx.ReadValueAsButton());
+
+        mInput.PlayerControls.WeaponWheelRight.performed += ctx => OnRightWeaponWheel(ctx.ReadValueAsButton());
+        mInput.PlayerControls.WeaponWheelLeft.performed += ctx => OnLeftWeaponWheel(ctx.ReadValueAsButton());
+        mInput.PlayerControls.HolsterWeapon.performed += ctx => OnHolsterWeapon(ctx.ReadValueAsButton());
+
         mMotor = GetComponent<CharacterMotor>();
         mAimMotor = GetComponent<CharacterAimMotor>();
+        mCharacterController = GetComponent<CharacterPhysicsController>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        OnUpdateLookDirection();
         OnUpdateMoveDirection();
+    }
+
+    void LateUpdate()
+    {
+        if (IsFiring)
+        {
+            mCharacterController.OnPullTrigger();
+        }
+        else
+        {
+            mCharacterController.OnReleaseTrigger();
+        }
+    }
+
+    public void OnAttack(bool isFiring)
+    {
+        IsFiring = isFiring;
+    }
+
+    private void OnInteract(bool value)
+    {
+        if (value)
+        {
+            if (!mCharacterController.OnInteractWithItem())
+            {
+                mCharacterController.OnReload();
+            }
+        }
+    }
+
+    private void OnRightWeaponWheel(bool value)
+    {
+        if (value)
+        {
+            mCharacterController.OnNextWeapon();
+        }
+    }
+
+    private void OnLeftWeaponWheel(bool value)
+    {
+        if (value)
+        {
+            mCharacterController.OnPreviousWeapon();
+        }
+    }
+    private void OnHolsterWeapon(bool value)
+    {
+        if (value)
+        {
+            mCharacterController.OnHolsterWeapon();
+        }
     }
 
     public void OnUpdateMoveDirection()
@@ -60,36 +122,29 @@ public class PlayerPhysicsInputController : MonoBehaviour
         moveSmoothDirection.y = 0;
 
        if (rawDirection.magnitude > 0.1f)
-          mMotor.setDirection(moveSmoothDirection);
+          mMotor.setInputDirection(moveSmoothDirection);
         else
-           mMotor.setDirection(Vector3.zero);
+           mMotor.setInputDirection(Vector3.zero);
     }
 
-    private void MovementtoWorldSpace(Transform root, Transform camera, ref Vector3 direction, ref float directionAngle, ref float speedOut)
+    private void OnUpdateLookDirection()
     {
-        Vector3 rootDirection = root.forward;
+        ////Looking
+        Vector3 rawLookDirection = new Vector3(InputLookAtDirection.x, 0, InputLookAtDirection.y);
 
-        speedOut = direction.sqrMagnitude;
 
-        Vector3 cameraDirection = camera.forward;
-        cameraDirection.y = 0;
+        var moveLookDirection = (Camera.main.transform.right * rawLookDirection.x + Camera.main.transform.forward * rawLookDirection.z).normalized;
+        moveLookDirection.y = 0;
 
-        Quaternion referntialShift = Quaternion.FromToRotation(Vector3.forward, cameraDirection);
 
-        direction = referntialShift * direction;
-        Vector3 axisSign = Vector3.Cross(direction, rootDirection);
-
-        Debug.DrawRay(new Vector3(root.position.x, root.position.y + 2f, root.position.z), direction, Color.green);
-        Debug.DrawRay(new Vector3(root.position.x, root.position.y + 2f, root.position.z), rootDirection, Color.magenta);
-        //Debug.DrawRay(new Vector3(root.position.x, root.position.y + 2f, root.position.z), direction, Color.blue);
-
-        float angleRootToMOve = Vector3.Angle(rootDirection, direction) * (axisSign.y >= 0 ? -1f : 1f);
-
-        angleRootToMOve /= 180f;
-
-        directionAngle = angleRootToMOve * DirectionSpeed;
+        // AimMotor.setDirection(mAutoAim.getActiveTargetDirection());
+        if (rawLookDirection.magnitude > 0.1f)
+            mAimMotor.setDirection(moveLookDirection);
+        else
+            mAimMotor.setDirection(transform.forward);
 
     }
+
 
     private void OnEnable()
     {

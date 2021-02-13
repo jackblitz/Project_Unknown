@@ -35,6 +35,7 @@ public class AnimatorPoseController : MonoBehaviour
 
 
     public Vector3 RootMotion = Vector3.zero;
+    public Quaternion Direction = Quaternion.identity;
     private Animator Animator;
 
     private void Awake()
@@ -106,6 +107,9 @@ public class AnimatorPoseController : MonoBehaviour
     private void OnAnimatorMove()
     {
         RootMotion += Animator.deltaPosition;
+        Direction *= Animator.deltaRotation;
+
+        Debug.Log(Direction);
     }
 
 }
