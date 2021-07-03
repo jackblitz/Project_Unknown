@@ -281,9 +281,9 @@ public class PlayerController : MonoBehaviour
 
 
         if (rawDirection.magnitude > 0.1f)
-            MovementMotor.setInputDirection(moveSmoothDirection);
+            MovementMotor.setDirection(moveSmoothDirection);
         else
-            MovementMotor.setInputDirection(Vector3.zero);
+            MovementMotor.setDirection(Vector3.zero);
 
     }
 

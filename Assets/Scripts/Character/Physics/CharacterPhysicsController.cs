@@ -23,7 +23,6 @@ public class CharacterPhysicsController : MonoBehaviour
 
     // Controller for updated the active ragdoll state
     private ActiveRagdollController mActiveRagdolController;
-    private WeaponController mWeaponController;
 
 
     // Start is called before the first frame update
@@ -36,89 +35,18 @@ public class CharacterPhysicsController : MonoBehaviour
        mAnimatorPoseController = GetComponentInChildren<AnimatorPoseController>();
        mActiveRagdolController = GetComponentInChildren<ActiveRagdollController>();
 
-       mWeaponController = GetComponent<WeaponController>();
-
     }
 
     private void Update()
     {
-        mAnimatorPoseController.SetSpeed(mMoveMotor.Speed);
-        mAnimatorPoseController.SetDirection(mMoveMotor.Direction);
-      
+        mAnimatorPoseController.SetSpeed(mMoveMotor.Direction.sqrMagnitude);
+        Debug.Log(mMoveMotor.Direction.sqrMagnitude);
     }
 
     private void FixedUpdate()
     {
         mCharacterController.Move(mAnimatorPoseController.RootMotion);
-
-        //transform.rotation = mAnimatorPoseController.Direction;
-        transform.forward = mAnimatorPoseController.Direction * Vector3.forward;
         mAnimatorPoseController.RootMotion = Vector3.zero;
-       // mAnimatorPoseController.Direction = Quaternion.identity;
-    }
-
-    public void OnPullTrigger()
-    {
-        if (mWeaponController != null)
-            mWeaponController.OnPullTrigger();
-    }
-
-    public void OnReleaseTrigger()
-    {
-        if (mWeaponController)
-        {
-            mWeaponController.OnReleaseTrigger();
-        }
-    }
-
-    public void OnReload()
-    {
-        if (mWeaponController)
-        {
-            mWeaponController.OnReload();
-        }
-    }
-
-    private ItemPickUp mInteractableItem;
-
-    public void OnTriggerItemEntered(GameObject gameObject)
-    {
-        mInteractableItem = gameObject.GetComponent<ItemPickUp>();
-    }
-
-    public void OnTrgggerItemExited(GameObject gameObject)
-    {
-        mInteractableItem = null;
-    }
-
-    public bool OnInteractWithItem()
-    {
-        if (mInteractableItem != null)
-        {
-            Item item = mInteractableItem.OnItemInteract();
-
-            mWeaponController.OnEquipWeapon((WeaponItem)item);
-            return true;
-        }
-        return false;
-    }
-
-    public void OnNextWeapon()
-    {
-        if (mWeaponController != null)
-            mWeaponController.OnNextWeapon();
-    }
-
-    public void OnPreviousWeapon()
-    {
-        if (mWeaponController != null)
-            mWeaponController.OnPreviousWeapon();
-    }
-
-    public void OnHolsterWeapon()
-    {
-        if (mWeaponController != null)
-            mWeaponController.HolsterActiveWeapon();
     }
 
 }
