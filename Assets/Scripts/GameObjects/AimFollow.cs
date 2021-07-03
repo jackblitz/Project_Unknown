@@ -17,7 +17,6 @@ public class AimFollow : MonoBehaviour
     {
         Vector3 position = new Vector3(mAimMotor.transform.position.x, mHitLocation.ShotHeight, mAimMotor.transform.position.z);
 
-
         transform.position = position + mAimMotor.Position * 5;
         transform.forward = mAimMotor.Position;
     }
